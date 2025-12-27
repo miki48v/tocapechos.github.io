@@ -3,113 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SERIES DATABASE // SYSTEM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>THE GRAND ARCHIVES // SERIES</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff00ff;
-            --bg-color: #050505;
-            --panel-bg: rgba(0, 243, 255, 0.05);
-            --grid-color: rgba(0, 243, 255, 0.1);
+            --gold: #d4af37;
+            --parchment: #f0e6d2;
+            --dark-wood: #2b1d0e;
+            --blood-red: #8a0303;
+            --iron: #4a4a4a;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--neon-cyan);
-            font-family: 'Share Tech Mono', monospace;
+            background-color: #0f0904;
+            color: var(--parchment);
+            font-family: 'MedievalSharp', cursive;
             min-height: 100vh;
             background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 30px 30px;
+                radial-gradient(circle at center, #2b1d0e 0%, #0f0904 100%);
             padding: 2rem;
+            overflow-x: hidden;
         }
 
-        /* CRT Scanline Effect */
+        /* Textura de papel viejo */
         body::after {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+            background-image: url("https://www.transparenttextures.com/patterns/aged-paper.png");
+            opacity: 0.4;
             pointer-events: none;
-            z-index: 100;
+            z-index: 0;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
+            border: 4px double var(--gold);
+            padding: 40px;
+            background: rgba(43, 29, 14, 0.95);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(0,0,0,0.9);
         }
+
+        /* Decoración de esquinas */
+        .corner {
+            position: absolute;
+            font-size: 2rem;
+            color: var(--gold);
+        }
+        .tl { top: 10px; left: 10px; }
+        .tr { top: 10px; right: 10px; transform: scaleX(-1); }
+        .bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+        .br { bottom: 10px; right: 10px; transform: scale(-1); }
 
         header {
             text-align: center;
             margin-bottom: 3rem;
-            border-bottom: 2px solid var(--neon-pink);
-            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 2rem;
         }
 
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            animation: flicker 3s infinite;
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px #000;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
         }
 
         button {
-            background: var(--neon-pink);
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-family: 'Orbitron', sans-serif;
+            background: var(--blood-red);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 12px 30px;
+            font-family: 'Cinzel', serif;
             font-weight: bold;
+            font-size: 1.1rem;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 2px;
             transition: 0.3s;
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
         button:hover {
-            background: #fff;
-            color: var(--neon-pink);
-            box-shadow: 0 0 15px var(--neon-pink);
+            background: var(--gold);
+            color: var(--blood-red);
+            box-shadow: 0 0 20px var(--gold);
         }
 
         .return-btn {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 30px;
+            right: 30px;
             z-index: 200;
+            background: var(--dark-wood);
         }
 
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.5; }
+        /* Reproductor del Bardo */
+        .bard-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark-wood);
+            border: 3px solid var(--gold);
+            padding: 15px;
+            width: 300px;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+        .bard-title {
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #5c4033;
+            padding-bottom: 5px;
+        }
+        audio {
+            width: 100%;
+            height: 30px;
+            filter: sepia(80%) grayscale(20%);
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
-    <button class="return-btn" onclick="window.location.href='index.html'">↩ RETURN TO HUB</button>
+    <button class="return-btn" onclick="window.location.href='index.html'">⚔ RETURN TO NEXUS</button>
 
     <div class="container">
+        <div class="corner tl">⚜</div>
+        <div class="corner tr">⚜</div>
+        <div class="corner bl">⚜</div>
+        <div class="corner br">⚜</div>
+
         <header>
-            <h1>SERIES DATABASE</h1>
-            <p>SYSTEM INITIALIZED // WAITING FOR DATA INPUT</p>
+            <h1>The Grand Archives</h1>
+            <p style="font-style: italic; color: #a89f91;">"Here lies the chronicles of visual tales witnessed by the Keeper."</p>
         </header>
 
-        <div style="text-align: center; margin-top: 50px; border: 1px dashed var(--neon-cyan); padding: 50px;">
-            <h2 style="font-family: 'Orbitron'; margin-bottom: 20px;">MODULE READY</h2>
-            <p>Aquí empezaremos a montar tu lista de series, tt.</p>
+        <div style="text-align: center; margin-top: 50px; padding: 40px; background: #e3d5b8; color: #2b1d0e; border-radius: 5px; transform: rotate(-1deg); box-shadow: inset 0 0 20px rgba(0,0,0,0.3);">
+            <h2 style="font-family: 'Cinzel'; margin-bottom: 20px; font-size: 2rem;">The Scroll is Empty</h2>
+            <p>No sagas have been inscribed yet, my Lord.</p>
         </div>
     </div>
+
+    <!-- BARD PLAYER -->
+    <div class="bard-player">
+        <div class="bard-title">🎶 The Bard's Corner</div>
+        <div id="bard-controls">
+            <button onclick="summonBard()" style="width: 100%; padding: 8px; font-size: 0.8rem; background: var(--blood-red); color: var(--gold); border: 1px solid var(--gold);">🏰 SUMMON BARD (PLAY)</button>
+        </div>
+        <div id="bard-frame" style="margin-top: 10px;"></div>
+    </div>
+
+    <script>
+        function summonBard() {
+            const frame = document.getElementById('bard-frame');
+            // Invocamos un mix de taberna medieval en bucle desde YouTube
+            frame.innerHTML = '<iframe width="100%" height="80" src="https://www.youtube.com/embed/uxyM7vhU0uU?autoplay=1&loop=1&playlist=uxyM7vhU0uU" title="Medieval Tavern Music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            
+            // Ocultamos el botón de invocar para dejar solo el reproductor
+            document.getElementById('bard-controls').style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
