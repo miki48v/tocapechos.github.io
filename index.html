@@ -7,11 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff00ff;
-            --bg-color: #050505;
-            --panel-bg: rgba(0, 243, 255, 0.05);
-            --grid-color: rgba(0, 243, 255, 0.1);
+            --neon-cyan: #e5e7eb; /* Blanco suave */
+            --neon-pink: #9ca3af; /* Gris medio */
+            --bg-color: #111827; /* Gris oscuro azulado (Mate) */
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --grid-color: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -34,16 +34,7 @@
 
         /* CRT Scanline Effect */
         body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 100;
+            display: none; /* Efecto desactivado para look limpio */
         }
 
         .container {
@@ -57,7 +48,7 @@
         header {
             text-align: center;
             margin-bottom: 3rem;
-            border-bottom: 2px solid var(--neon-pink);
+            border-bottom: 1px solid var(--neon-pink);
             padding-bottom: 1rem;
             position: relative;
         }
@@ -67,8 +58,8 @@
             font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 5px;
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-            animation: flicker 3s infinite;
+            text-shadow: none;
+            animation: none;
         }
 
         .input-panel {
@@ -76,8 +67,8 @@
             border: 1px solid var(--neon-cyan);
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+            box-shadow: none;
+            border-radius: 8px;
         }
 
         .input-group {
@@ -99,8 +90,8 @@
         }
 
         input:focus {
-            box-shadow: 0 0 10px var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.1);
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         button {
@@ -114,13 +105,13 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             transition: 0.3s;
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            border-radius: 4px;
         }
 
         button:hover {
-            background: #fff;
-            color: var(--neon-pink);
-            box-shadow: 0 0 15px var(--neon-pink);
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: none;
         }
 
         .stats-bar {
@@ -134,7 +125,7 @@
         .rank-display {
             font-family: 'Orbitron', sans-serif;
             font-weight: bold;
-            text-shadow: 0 0 10px currentColor;
+            text-shadow: none;
         }
 
         .game-list {
@@ -145,7 +136,7 @@
 
         .game-card {
             background: rgba(0, 0, 0, 0.8);
-            border-left: 5px solid var(--neon-cyan);
+            border-left: 4px solid var(--neon-pink);
             padding: 2rem;
             position: relative;
             transition: 0.3s;
@@ -167,7 +158,7 @@
 
         .game-card:hover {
             transform: translateX(10px);
-            box-shadow: -5px 0 15px rgba(0, 243, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
         .game-info {
@@ -181,7 +172,7 @@
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
             color: #fff;
-            text-shadow: 2px 2px 0px #000;
+            text-shadow: none;
         }
 
         .game-meta {
@@ -231,7 +222,7 @@
             border: 1px solid var(--neon-cyan);
             padding: 1.5rem;
             z-index: 10;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .clock-item {
@@ -274,7 +265,7 @@
             z-index: 200;
             width: 250px;
             display: none;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .config-panel.active {
@@ -315,12 +306,12 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+            box-shadow: none;
         }
 
         .profile-card:hover {
-            box-shadow: 0 0 20px var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.1);
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .profile-avatar {
@@ -402,7 +393,7 @@
         .start-btn:hover {
             background: var(--neon-pink);
             color: white;
-            box-shadow: 0 0 30px var(--neon-pink);
+            box-shadow: none;
         }
 
         /* Hub / Dashboard Styles */
@@ -427,13 +418,13 @@
         .hub-card:hover {
             background: rgba(0, 243, 255, 0.1);
             transform: translateY(-10px);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .hub-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
-            text-shadow: 0 0 10px var(--neon-pink);
+            text-shadow: none;
         }
 
         .hub-title {
@@ -444,14 +435,7 @@
         }
 
         @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                opacity: 1;
-                text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-            }
-            20%, 24%, 55% {
-                opacity: 0.5;
-                text-shadow: none;
-            }
+            /* Animación eliminada para estilo neutro */
         }
 
         /* Responsive */
@@ -485,20 +469,34 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            width: 250px;
+            width: 260px;
         }
-        .mini-player audio {
-            width: 100%;
-            height: 25px;
-            margin-top: 5px;
+
+        /* Visualizador Simulado (Estilo Neutro) */
+        .visualizer {
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            height: 30px;
+            gap: 3px;
+            margin-top: 10px;
+        }
+        .bar {
+            width: 4px;
+            background-color: var(--neon-cyan);
+            animation: dance 1s infinite ease-in-out;
+        }
+        @keyframes dance {
+            0%, 100% { height: 10%; opacity: 0.5; }
+            50% { height: 100%; opacity: 1; }
         }
     </style>
 </head>
 <body>
 
     <div id="mainMenu">
-        <h1 style="font-size: 4rem; margin-bottom: 1rem; animation: flicker 2s infinite;">SYSTEM OS</h1>
-        <p style="margin-bottom: 3rem; color: var(--neon-cyan); letter-spacing: 2px;">SYSTEM READY // WAITING FOR USER INPUT</p>
+        <h1 style="font-size: 4rem; margin-bottom: 1rem;">SYSTEM OS</h1>
+        <p style="margin-bottom: 3rem; color: var(--neon-pink); letter-spacing: 2px;">MINIMALIST INTERFACE // READY</p>
         <button class="start-btn" onclick="enterSystem()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -625,9 +623,22 @@
 
     <!-- MINI LOCAL PLAYER -->
     <div class="mini-player">
-        <div style="font-size: 0.8rem; color: var(--neon-pink); font-family: 'Orbitron';">💿 LOCAL BGM</div>
-        <input type="file" id="bgMusicInput" accept="audio/*" style="font-size: 0.7rem; color: #aaa;">
-        <audio id="bgAudio" controls loop></audio>
+        <div style="font-size: 0.8rem; color: var(--neon-cyan); font-family: 'Orbitron'; margin-bottom: 5px;">💿 SYSTEM AUDIO</div>
+        <div id="sys-controls">
+            <button onclick="connectSystemAudio()" style="width: 100%; padding: 8px; font-size: 0.7rem; background: #374151; border: 1px solid #4b5563; color: #fff;">▶ CONNECT LO-FI STREAM</button>
+        </div>
+        
+        <!-- Visualizador -->
+        <div id="sys-visualizer" class="visualizer">
+            <div class="bar" style="animation-duration: 0.9s;"></div>
+            <div class="bar" style="animation-duration: 1.2s;"></div>
+            <div class="bar" style="animation-duration: 0.8s;"></div>
+            <div class="bar" style="animation-duration: 1.1s;"></div>
+            <div class="bar" style="animation-duration: 1.0s;"></div>
+        </div>
+
+        <!-- Iframe Oculto -->
+        <div id="sys-audio-frame" style="width: 0; height: 0; overflow: hidden;"></div>
     </div>
 
     <!-- HUB VIEW (MENU PRINCIPAL) -->
@@ -827,8 +838,8 @@
             else { rank = "NEON ROOKIE"; color = "#ffffff"; } // Blanco
 
             rankEl.innerText = `RANK: ${rank}`;
-            rankEl.style.color = color;
-            rankEl.style.textShadow = `0 0 15px ${color}`;
+            rankEl.style.color = "var(--neon-cyan)"; /* Forzar color neutro */
+            rankEl.style.textShadow = "none";
         }
 
         // Renderizar al cargar
@@ -1013,15 +1024,15 @@
             document.getElementById('returnBtn').style.display = "none";
         }
 
-        // --- MINI REPRODUCTOR LOCAL ---
-        document.getElementById('bgMusicInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const audio = document.getElementById('bgAudio');
-            if(file) {
-                audio.src = URL.createObjectURL(file);
-                audio.play();
-            }
-        });
+        // --- AUDIO DE SISTEMA (LO-FI) ---
+        function connectSystemAudio() {
+            const frame = document.getElementById('sys-audio-frame');
+            // Mix Lo-Fi Hip Hop (10 Horas) - Sin vídeo, solo audio
+            frame.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/n61ULEU7CO0?autoplay=1&loop=1&playlist=n61ULEU7CO0" title="Lo-Fi Radio" frameborder="0" allow="autoplay" allowfullscreen></iframe>';
+            
+            document.getElementById('sys-controls').style.display = 'none';
+            document.getElementById('sys-visualizer').style.display = 'flex';
+        }
 
         // --- SISTEMA DE EXPORTACIÓN / IMPORTACIÓN ---
         function exportData() {
