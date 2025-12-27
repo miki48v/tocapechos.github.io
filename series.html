@@ -130,6 +130,25 @@
             filter: sepia(80%) grayscale(20%);
             margin-top: 5px;
         }
+
+        /* Visualizador Simulado */
+        .visualizer {
+            display: none; /* Oculto hasta activar */
+            justify-content: center;
+            align-items: flex-end;
+            height: 40px;
+            gap: 4px;
+            margin-top: 15px;
+        }
+        .bar {
+            width: 5px;
+            background-color: var(--gold);
+            animation: dance 1s infinite ease-in-out;
+        }
+        @keyframes dance {
+            0%, 100% { height: 10%; }
+            50% { height: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -159,17 +178,34 @@
         <div id="bard-controls">
             <button onclick="summonBard()" style="width: 100%; padding: 8px; font-size: 0.8rem; background: var(--blood-red); color: var(--gold); border: 1px solid var(--gold);">🏰 SUMMON BARD (PLAY)</button>
         </div>
-        <div id="bard-frame" style="margin-top: 10px;"></div>
+        
+        <!-- Visualizador -->
+        <div id="visualizer" class="visualizer">
+            <div class="bar" style="animation-duration: 0.9s;"></div>
+            <div class="bar" style="animation-duration: 1.1s;"></div>
+            <div class="bar" style="animation-duration: 1.3s;"></div>
+            <div class="bar" style="animation-duration: 0.8s;"></div>
+            <div class="bar" style="animation-duration: 1.2s;"></div>
+            <div class="bar" style="animation-duration: 1.0s;"></div>
+            <div class="bar" style="animation-duration: 1.4s;"></div>
+            <div class="bar" style="animation-duration: 0.7s;"></div>
+            <div class="bar" style="animation-duration: 1.1s;"></div>
+            <div class="bar" style="animation-duration: 0.9s;"></div>
+        </div>
+
+        <!-- Iframe Oculto -->
+        <div id="bard-frame" style="width: 0; height: 0; overflow: hidden;"></div>
     </div>
 
     <script>
         function summonBard() {
             const frame = document.getElementById('bard-frame');
-            // Invocamos un mix de taberna medieval en bucle desde YouTube
-            frame.innerHTML = '<iframe width="100%" height="80" src="https://www.youtube.com/embed/uxyM7vhU0uU?autoplay=1&loop=1&playlist=uxyM7vhU0uU" title="Medieval Tavern Music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            // Invocamos un mix de 10 horas de Taberna Medieval (oculto)
+            frame.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/roABNwbjZf4?autoplay=1&loop=1&playlist=roABNwbjZf4" title="Medieval Music" frameborder="0" allow="autoplay" allowfullscreen></iframe>';
             
             // Ocultamos el botón de invocar para dejar solo el reproductor
             document.getElementById('bard-controls').style.display = 'none';
+            document.getElementById('visualizer').style.display = 'flex';
         }
     </script>
 
