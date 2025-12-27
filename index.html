@@ -735,6 +735,17 @@
             }
         }
 
+        // Función de seguridad para que no te cuelen scripts raros (Sanitize)
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         // Función para renderizar la lista
         function renderGames() {
             const list = document.getElementById('gameList');
@@ -755,13 +766,13 @@
                 }
                 card.innerHTML = `
                     <div class="game-info">
-                        <h3>${game.name}</h3>
+                        <h3>${escapeHtml(game.name)}</h3>
                         <div class="game-meta">
-                            <span class="platform-tag">${game.platform.toUpperCase()}</span>
-                            <span class="meta-item">📂 ${game.genres}</span>
-                            <span class="meta-item">⏱️ ${game.playtime}</span>
-                            <span class="meta-item">💀 ${game.difficulty}</span>
-                            <span class="meta-item">Ⓜ️ ${game.metacritic || 'N/A'}</span>
+                            <span class="platform-tag">${escapeHtml(game.platform.toUpperCase())}</span>
+                            <span class="meta-item">📂 ${escapeHtml(game.genres)}</span>
+                            <span class="meta-item">⏱️ ${escapeHtml(game.playtime)}</span>
+                            <span class="meta-item">💀 ${escapeHtml(game.difficulty)}</span>
+                            <span class="meta-item">Ⓜ️ ${escapeHtml(game.metacritic || 'N/A')}</span>
                         </div>
                     </div>
                     <button class="delete-btn" onclick="deleteGame(${game.id})">PURGE</button>
