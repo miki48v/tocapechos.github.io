@@ -3,97 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE GRAND ARCHIVES // SERIES</title>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>CINEMA DATABASE // SERIES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #d4af37;
-            --parchment: #f0e6d2;
-            --dark-wood: #2b1d0e;
-            --blood-red: #8a0303;
-            --iron: #4a4a4a;
+            --cinema-red: #e50914;
+            --cinema-dark: #141414;
+            --text-light: #f5f5f1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: #0f0904;
-            color: var(--parchment);
-            font-family: 'MedievalSharp', cursive;
+            background-color: var(--cinema-dark);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at center, #2b1d0e 0%, #0f0904 100%);
-            padding: 2rem;
-            overflow-x: hidden;
-        }
-
-        /* Textura de papel viejo */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: url("https://www.transparenttextures.com/patterns/aged-paper.png");
-            opacity: 0.4;
-            pointer-events: none;
-            z-index: 0;
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.8), var(--cinema-dark));
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            border: 4px double var(--gold);
-            padding: 40px;
-            background: rgba(43, 29, 14, 0.95);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(0,0,0,0.9);
+            padding: 2rem;
         }
-
-        /* Decoración de esquinas */
-        .corner {
-            position: absolute;
-            font-size: 2rem;
-            color: var(--gold);
-        }
-        .tl { top: 10px; left: 10px; }
-        .tr { top: 10px; right: 10px; transform: scaleX(-1); }
-        .bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
-        .br { bottom: 10px; right: 10px; transform: scale(-1); }
 
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 2rem;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
         }
 
         h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 3.5rem;
-            color: var(--gold);
-            text-shadow: 2px 2px 4px #000;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 5rem;
+            color: var(--cinema-red);
+            text-transform: uppercase;
+            letter-spacing: 3px;
             margin-bottom: 10px;
-            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(229, 9, 20, 0.4);
         }
 
         button {
-            background: var(--blood-red);
-            color: var(--gold);
-            border: 2px solid var(--gold);
-            padding: 12px 30px;
-            font-family: 'Cinzel', serif;
+            background: var(--cinema-red);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-family: 'Montserrat', sans-serif;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             text-transform: uppercase;
             transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border-radius: 4px;
         }
 
         button:hover {
-            background: var(--gold);
-            color: var(--blood-red);
-            box-shadow: 0 0 20px var(--gold);
+            background: white;
+            color: var(--cinema-red);
         }
 
         .return-btn {
@@ -101,39 +68,51 @@
             top: 30px;
             right: 30px;
             z-index: 200;
-            background: var(--dark-wood);
+            background: rgba(0,0,0,0.5);
+            border: 1px solid white;
         }
 
-        /* Reproductor del Bardo */
+        .empty-state {
+            text-align: center;
+            margin-top: 50px;
+            padding: 60px;
+            background: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .empty-state h2 {
+            font-family: 'Bebas Neue';
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        /* Reproductor */
         .bard-player {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--dark-wood);
-            border: 3px solid var(--gold);
+            background: rgba(0,0,0,0.9);
+            border-top: 2px solid var(--cinema-red);
             padding: 15px;
             width: 300px;
             z-index: 100;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             text-align: center;
+            color: white;
         }
         .bard-title {
-            color: var(--gold);
-            font-family: 'Cinzel', serif;
+            color: var(--cinema-red);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
             margin-bottom: 10px;
-            border-bottom: 1px solid #5c4033;
-            padding-bottom: 5px;
-        }
-        audio {
-            width: 100%;
-            height: 30px;
-            filter: sepia(80%) grayscale(20%);
-            margin-top: 5px;
         }
 
-        /* Visualizador Simulado */
+        /* Visualizador */
         .visualizer {
-            display: none; /* Oculto hasta activar */
+            display: none;
             justify-content: center;
             align-items: flex-end;
             height: 40px;
@@ -142,72 +121,289 @@
         }
         .bar {
             width: 5px;
-            background-color: var(--gold);
+            background-color: var(--cinema-red);
             animation: dance 1s infinite ease-in-out;
         }
         @keyframes dance {
             0%, 100% { height: 10%; }
             50% { height: 100%; }
         }
+
+        /* --- RELOJES Y PERFILES (ESTILO CINE) --- */
+        .clock-panel {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border-left: 2px solid var(--cinema-red);
+            padding: 1.5rem;
+            z-index: 10;
+            text-align: right;
+            margin-top: -30px;
+        }
+        .clock-item { margin-bottom: 1rem; }
+        .clock-item:last-child { margin-bottom: 0; }
+        .clock-label { color: #999; font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 2px; }
+        .clock-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: #fff; }
+
+        .profile-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+        .profile-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #333;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 280px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .profile-card:hover { border-color: var(--cinema-red); }
+        .profile-avatar {
+            width: 50px; height: 50px;
+            background-color: #333;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--cinema-red);
+        }
+        .profile-details { flex-grow: 1; }
+        .profile-name { font-family: 'Bebas Neue'; font-size: 1.2rem; color: #fff; }
+        .profile-level { font-size: 0.8rem; color: #999; }
+        .profile-edit-btn {
+            background: transparent !important;
+            border: none !important;
+            color: #666 !important;
+            padding: 0 !important;
+            font-size: 1.2rem;
+        }
+        .profile-edit-btn:hover { color: var(--cinema-red) !important; }
+
+        /* Editor Modal */
+        .config-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #141414; border: 2px solid var(--cinema-red); padding: 2rem;
+            z-index: 2000; width: 320px; display: none; box-shadow: 0 0 50px rgba(229, 9, 20, 0.2);
+        }
+        .config-item { margin-bottom: 1rem; }
+        .config-item label { display: block; color: #999; font-size: 0.8rem; margin-bottom: 5px; }
+        .config-item input { width: 100%; background: #333; border: 1px solid #555; color: white; padding: 8px; font-family: 'Montserrat', sans-serif; }
+
+        /* --- CINE ANTIGUO OVERLAY --- */
+        #cinema-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505; z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+            flex-direction: column;
+        }
+        .film-grain {
+            position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
+            opacity: 0.15; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: grain 0.2s steps(3) infinite;
+        }
+        @keyframes grain { 0% { transform: translate(0,0); } 100% { transform: translate(-5%,-5%); } }
+        
+        .countdown-circle {
+            width: 300px; height: 300px;
+            border: 4px solid #333; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255,255,255,0.1);
+        }
+        .countdown-circle::before, .countdown-circle::after {
+            content: ''; position: absolute; background: #333;
+        }
+        .countdown-circle::before { width: 100%; height: 2px; top: 50%; }
+        .countdown-circle::after { height: 100%; width: 2px; left: 50%; }
+        
+        #countdown-number {
+            font-family: 'Bebas Neue'; font-size: 10rem; color: #e5e5e5;
+            z-index: 2; text-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        
+        #cinema-screen {
+            width: 95%; height: 90%;
+            background: #000;
+            box-shadow: 0 0 100px rgba(255,255,255,0.1);
+            display: none; z-index: 10;
+        }
+        
+        .close-cinema-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; color: #555; border: none; font-size: 2rem;
+            cursor: pointer; z-index: 20;
+        }
+        .close-cinema-btn:hover { color: var(--cinema-red); }
     </style>
 </head>
 <body>
 
-    <button class="return-btn" onclick="window.location.href='index.html'">⚔ RETURN TO NEXUS</button>
+    <button class="return-btn" onclick="window.location.href='hub.html'">↩ VOLVER AL HUB</button>
 
-    <div class="container">
-        <div class="corner tl">⚜</div>
-        <div class="corner tr">⚜</div>
-        <div class="corner bl">⚜</div>
-        <div class="corner br">⚜</div>
-
-        <header>
-            <h1>The Grand Archives</h1>
-            <p style="font-style: italic; color: #a89f91;">"Here lies the chronicles of visual tales witnessed by the Keeper."</p>
-        </header>
-
-        <div style="text-align: center; margin-top: 50px; padding: 40px; background: #e3d5b8; color: #2b1d0e; border-radius: 5px; transform: rotate(-1deg); box-shadow: inset 0 0 20px rgba(0,0,0,0.3);">
-            <h2 style="font-family: 'Cinzel'; margin-bottom: 20px; font-size: 2rem;">The Scroll is Empty</h2>
-            <p>No sagas have been inscribed yet, my Lord.</p>
+    <!-- Profile Editor Modal (Necesario para que funcione el script) -->
+    <div id="profileEditor" class="config-panel">
+        <h3 style="margin-bottom: 1rem; color: var(--cinema-red); font-family: 'Bebas Neue'; font-size: 1.5rem;">EDITAR PERFIL</h3>
+        <div class="config-item"><label>PLATAFORMA</label><input type="text" id="edit-platform" placeholder="STEAM / NETFLIX"></div>
+        <div class="config-item"><label>USUARIO</label><input type="text" id="edit-name" placeholder="Tu Nick"></div>
+        <div class="config-item"><label>NIVEL / ESTADO</label><input type="text" id="edit-level" placeholder="Viendo..."></div>
+        <div class="config-item"><label>URL AVATAR</label><input type="text" id="edit-avatar" placeholder="https://..."></div>
+        <div class="config-item"><label>URL PERFIL</label><input type="text" id="edit-url" placeholder="Link al perfil"></div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="saveProfile()" style="flex: 1;">GUARDAR</button>
+            <button onclick="closeProfileEditor()" style="flex: 1; background: #333; color: #aaa;">CANCELAR</button>
         </div>
     </div>
 
-    <!-- BARD PLAYER -->
+    <!-- Perfiles -->
+    <div class="profile-container">
+        <div class="profile-card" onclick="visitProfile(1)">
+            <div class="profile-avatar" id="p1-avatar"></div>
+            <div class="profile-details"><div class="profile-name" id="p1-name">LINK ACCOUNT 01</div><div class="profile-level" id="p1-level">OFFLINE</div></div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(1)">⚙️</button>
+        </div>
+        <div class="profile-card" onclick="visitProfile(2)">
+            <div class="profile-avatar" id="p2-avatar"></div>
+            <div class="profile-details"><div class="profile-name" id="p2-name">LINK ACCOUNT 02</div><div class="profile-level" id="p2-level">OFFLINE</div></div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(2)">⚙️</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Cinema Database</h1>
+            <p style="color: #999; letter-spacing: 1px;">COLECCIÓN DE SERIES Y PELÍCULAS</p>
+        </header>
+
+        <div class="empty-state">
+            <h2>LA SALA ESTÁ VACÍA</h2>
+            <p style="color: #aaa;">No hay proyecciones programadas por el momento.</p>
+        </div>
+    </div>
+
+    <!-- Relojes -->
+    <div class="clock-panel">
+        <div class="clock-item"><div class="clock-label">🇪🇸 ESPAÑA</div><div class="clock-time" id="clock-esp">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇸🇴 SOMALIA</div><div class="clock-time" id="clock-som">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇺🇸 USA (NY)</div><div class="clock-time" id="clock-usa">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇸🇦 ARABIA</div><div class="clock-time" id="clock-sa">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇲🇦 MARRUECOS</div><div class="clock-time" id="clock-ma">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇻🇳 VIETNAM</div><div class="clock-time" id="clock-vn">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇧🇩 BANGLADESH</div><div class="clock-time" id="clock-bd">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇰🇪 KENYA</div><div class="clock-time" id="clock-ke">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">🇮🇳 INDIA</div><div class="clock-time" id="clock-in">00:00:00</div></div>
+        <div class="clock-item"><div class="clock-label">✈️ 🏢🏢</div><div class="clock-time" id="clock-meme">00:00:00</div></div>
+    </div>
+
+    <!-- PLAYER -->
     <div class="bard-player">
-        <div class="bard-title">🎶 The Bard's Corner</div>
+        <div class="bard-title">🍿 AMBIENTE DE CINE</div>
         <div id="bard-controls">
-            <button onclick="summonBard()" style="width: 100%; padding: 8px; font-size: 0.8rem; background: var(--blood-red); color: var(--gold); border: 1px solid var(--gold);">🏰 SUMMON BARD (PLAY)</button>
+            <button onclick="summonBard()" style="width: 100%; padding: 8px; font-size: 0.8rem;">▶ REPRODUCIR BSO</button>
+            <button onclick="openCinema()" style="width: 100%; padding: 8px; font-size: 0.8rem; margin-top: 5px; background: #222; border: 1px solid #444;">🎥 PROYECTAR (URL)</button>
         </div>
         
-        <!-- Visualizador -->
         <div id="visualizer" class="visualizer">
             <div class="bar" style="animation-duration: 0.9s;"></div>
-            <div class="bar" style="animation-duration: 1.1s;"></div>
             <div class="bar" style="animation-duration: 1.3s;"></div>
             <div class="bar" style="animation-duration: 0.8s;"></div>
             <div class="bar" style="animation-duration: 1.2s;"></div>
             <div class="bar" style="animation-duration: 1.0s;"></div>
-            <div class="bar" style="animation-duration: 1.4s;"></div>
-            <div class="bar" style="animation-duration: 0.7s;"></div>
-            <div class="bar" style="animation-duration: 1.1s;"></div>
-            <div class="bar" style="animation-duration: 0.9s;"></div>
         </div>
 
-        <!-- Iframe Oculto -->
-        <div id="bard-frame" style="width: 0; height: 0; overflow: hidden;"></div>
+        <div id="bard-frame" style="width:0;height:0;overflow:hidden;"></div>
+    </div>
+
+    <!-- CINEMA OVERLAY -->
+    <div id="cinema-overlay">
+        <div class="film-grain"></div>
+        <button class="close-cinema-btn" onclick="closeCinema()">×</button>
+        <div id="countdown-container" class="countdown-circle">
+            <div id="countdown-number">10</div>
+        </div>
+        <div id="cinema-screen"></div>
     </div>
 
     <script>
+        let cinemaTimer = null;
+
         function summonBard() {
             const frame = document.getElementById('bard-frame');
-            // Invocamos un mix de 10 horas de Taberna Medieval (oculto)
-            frame.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/roABNwbjZf4?autoplay=1&loop=1&playlist=roABNwbjZf4" title="Medieval Music" frameborder="0" allow="autoplay" allowfullscreen></iframe>';
-            
-            // Ocultamos el botón de invocar para dejar solo el reproductor
+            frame.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&loop=1&playlist=jfKfPfyJRdk" title="Lofi Movie" frameborder="0" allow="autoplay" allowfullscreen></iframe>';
             document.getElementById('bard-controls').style.display = 'none';
             document.getElementById('visualizer').style.display = 'flex';
         }
+
+        function openCinema() {
+            let url = prompt("🎞️ PEGA LA URL DEL VÍDEO (YouTube):");
+            if (!url) return;
+
+            // Convertir URL de YouTube a Embed
+            if (url.includes("watch?v=")) {
+                url = url.replace("watch?v=", "embed/");
+                if (url.includes("&")) url = url.split("&")[0];
+            } else if (url.includes("youtu.be/")) {
+                url = url.replace("youtu.be/", "www.youtube.com/embed/");
+            }
+
+            const overlay = document.getElementById('cinema-overlay');
+            const countEl = document.getElementById('countdown-number');
+            const countCont = document.getElementById('countdown-container');
+            const screen = document.getElementById('cinema-screen');
+            const grain = document.querySelector('.film-grain');
+
+            // Resetear estado inicial (luces tenues y grano activado)
+            overlay.style.background = "#050505";
+            grain.style.display = "block";
+
+            overlay.style.display = 'flex';
+            countCont.style.display = 'flex';
+            screen.style.display = 'none';
+            screen.innerHTML = '';
+
+            let count = 10;
+            countEl.innerText = count;
+
+            if (cinemaTimer) clearInterval(cinemaTimer);
+            cinemaTimer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countEl.innerText = count;
+                } else {
+                    clearInterval(cinemaTimer);
+                    countCont.style.display = 'none';
+                    
+                    // APAGAR LUCES: Fondo negro puro y quitar ruido visual
+                    overlay.style.background = "#000000";
+                    grain.style.display = "none";
+
+                    screen.style.display = 'block';
+                    screen.innerHTML = `<iframe width="100%" height="100%" src="${url}?autoplay=1&modestbranding=1&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                }
+            }, 1000);
+        }
+
+        function closeCinema() {
+            if (cinemaTimer) clearInterval(cinemaTimer);
+            const overlay = document.getElementById('cinema-overlay');
+            const screen = document.getElementById('cinema-screen');
+            overlay.style.display = 'none';
+            screen.innerHTML = ''; // Parar vídeo
+            
+            // Restaurar ambiente al salir
+            overlay.style.background = "#050505";
+            document.querySelector('.film-grain').style.display = "block";
+        }
     </script>
 
+    <script src="script.js"></script>
 </body>
 </html>

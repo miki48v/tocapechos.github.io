@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOL ARENA RANDOMIZER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #091428 0%, #0a0a0c 100%);
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            overflow: hidden;
+            color: #f0e6d2;
+            transition: background-color 0.2s;
+            margin: 0;
+            border: 2px solid #785a28;
+            box-sizing: border-box;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 { 
+            font-size: 4rem; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin: 0 0 2rem 0;
+            color: #c8aa6e;
+            letter-spacing: 3px;
+            border-bottom: 1px solid #463714;
+            padding-bottom: 10px;
+        }
+        .duo-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            align-items: flex-start; /* Para que crezca hacia abajo */
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .player-slot {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        .player-name {
+            font-size: 1.8rem;
+            color: #f0e6d2;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            text-transform: uppercase;
+            opacity: 0; /* Oculto al inicio */
+        }
+        .player-name.reveal {
+            animation: nameImpact 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .champ-wrapper {
+            position: relative;
+            width: 260px;
+            height: 400px;
+        }
+        .champ-box {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #c8aa6e;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(200, 170, 110, 0.2);
+            background: #010a13;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+        /* CINTA DE IMÁGENES (REEL) */
+        .reel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* La transición se controla por JS */
+        }
+        .reel img {
+            width: 100%;
+            height: 400px; /* Altura exacta del contenedor para que encaje */
+            object-fit: cover;
+            display: block;
+        }
+        
+        .champ-name-overlay {
+            position: absolute;
+            bottom: 20px;
+            z-index: 2;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 2px #000;
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.9), transparent);
+            padding: 10px 20px;
+            border-top: 1px solid #c8aa6e;
+            border-bottom: 1px solid #c8aa6e;
+            min-width: 60%;
+            display: none; /* Se muestra al final */
+            color: #f0e6d2;
+        }
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; 
+            height: 0; 
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #c8aa6e;
+            z-index: 10;
+            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.5));
+        }
+        .plus { 
+            font-size: 3rem; font-weight: bold; color: #c8aa6e; 
+            text-shadow: 0 0 10px rgba(200, 170, 110, 0.5);
+            margin-top: 180px; /* Centrado respecto a las ruletas */
+        }
+        
+        /* BUILD DISPLAY */
+        .build-display {
+            background: rgba(1, 10, 19, 0.9);
+            border: 1px solid #c8aa6e;
+            padding: 15px;
+            width: 200px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #f0e6d2;
+            display: none;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            height: 400px; /* Match champ height */
+            overflow-y: auto;
+        }
+        .build-section { margin-bottom: 15px; }
+        .build-section-title { color: #937341; font-size: 0.8rem; margin-bottom: 5px; text-transform: uppercase; }
+        .item-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .item-icon { width: 100%; aspect-ratio: 1; border: 1px solid #463714; border-radius: 4px; background: #000; object-fit: cover; }
+        .augment-text { 
+            color: #0acbe6; font-weight: bold; text-shadow: 0 0 5px rgba(10, 203, 230, 0.5); 
+            font-size: 1rem; line-height: 1.2;
+            border: 1px solid #0acbe6; padding: 10px; border-radius: 4px; background: rgba(10, 203, 230, 0.1);
+            text-align: center;
+        }
+        
+        .build-title {
+            text-align: center; border-bottom: 1px solid #463714; 
+            margin-bottom: 10px; padding-bottom: 5px; color: #c8aa6e; font-weight: bold;
+        }
+
+        button {
+            font-size: 1.5rem; padding: 15px 50px; 
+            border: 2px solid #c8aa6e;
+            background: #1e2328; 
+            color: #cdbe91; 
+            cursor: pointer;
+            font-family: 'Cinzel', serif; font-weight: bold;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            transition: 0.3s;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        button:hover { 
+            background: #1e282d; 
+            color: #fff;
+            box-shadow: 0 0 15px rgba(200, 170, 110, 0.4);
+            text-shadow: 0 0 5px #c8aa6e;
+        }
+        button:active { transform: scale(0.98); }
+        
+        .return-btn {
+            position: fixed; top: 20px; right: 20px; font-size: 1rem; padding: 10px;
+            background: #1e2328; border: 1px solid #c8aa6e; color: #cdbe91;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+        }
+        .return-btn:hover { color: #fff; border-color: #f0e6d2; }
+
+        /* RULES PANEL */
+        .rules-panel {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            background: rgba(1, 10, 19, 0.95);
+            border: 2px solid #c8aa6e;
+            padding: 20px;
+            color: #f0e6d2;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            text-align: left;
+            z-index: 100;
+            overflow: visible; /* Para que las imágenes puedan salirse del borde */
+        }
+        .rules-title {
+            color: #c8aa6e;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #463714;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .rules-list { list-style: none; padding: 0; margin: 0; }
+        .rules-list li { margin-bottom: 12px; font-size: 0.9rem; line-height: 1.4; display: flex; }
+        .rules-list li::before { content: '⚔️'; color: #c8aa6e; margin-right: 10px; }
+
+        /* IMÁGENES DECORATIVAS */
+        .deco-img {
+            position: absolute;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+            z-index: 101;
+        }
+        .poro-img {
+            top: -55px;
+            right: -35px;
+            width: 90px;
+            transform: rotate(15deg);
+        }
+        .key-img {
+            bottom: -25px;
+            left: -25px;
+            width: 60px;
+            transform: rotate(-15deg);
+        }
+
+        @keyframes nameImpact {
+            0% { opacity: 0; transform: scale(3); filter: blur(10px); color: #fff; }
+            50% { opacity: 1; transform: scale(1); filter: blur(0); color: #fff; text-shadow: 0 0 20px #c8aa6e; }
+            100% { opacity: 1; transform: scale(1); color: #c8aa6e; }
+        }
+    </style>
+</head>
+<body>
+    <button class="return-btn" onclick="window.location.href='hub.html'">↩ VOLVER</button>
+    <div class="container">
+        <h1>ARENA DUO GENERATOR</h1>
+        
+        <div class="duo-container">
+            <div class="player-slot">
+                <div class="champ-wrapper">
+                    <div class="pointer"></div>
+                    <div class="champ-box">
+                        <div id="reel1" class="reel"></div>
+                        <div id="c1" class="champ-name-overlay">?</div>
+                    </div>
+                </div>
+                <div class="info-col">
+                    <div id="build1" class="build-display"></div>
+                    <div id="name1" class="player-name"></div>
+                </div>
+            </div>
+            <div class="plus">+</div>
+            <div class="player-slot">
+                <div class="champ-wrapper">
+                    <div class="pointer"></div>
+                    <div class="champ-box">
+                        <div id="reel2" class="reel"></div>
+                        <div id="c2" class="champ-name-overlay">?</div>
+                    </div>
+                </div>
+                <div class="info-col">
+                    <div id="build2" class="build-display"></div>
+                    <div id="name2" class="player-name"></div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="rerollBtn" onclick="generateDuo()">REROLL DUO</button>
+    </div>
+
+    <div class="rules-panel">
+        <img src="https://raw.communitydragon.org/latest/game/assets/loadouts/summoneremotes/flairs/poro_happy.png" class="deco-img poro-img" alt="Poro" onerror="this.style.display='none'">
+        <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/material_key_fragment.png" class="deco-img key-img" alt="Key" onerror="this.style.display='none'">
+        <div class="rules-title">NORMAS DEL RETO</div>
+        <ul class="rules-list">
+            <li>Jugar obligatoriamente el campeón que toque.</li>
+            <li>Respetar la Build (el orden da igual).</li>
+            <li>El Objeto Prismático es sagrado.</li>
+            <li>Si pierdes antes del top 4, reroll.</li>
+            <li>Prohibido tiltearse (Opcional).</li>
+        </ul>
+    </div>
+    <script>
+        const champions = [
+            "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia", "Annie", "Aphelios", "Ashe", "Aurelion Sol", 
+            "Azir", "Bard", "Bel'Veth", "Blitzcrank", "Brand", "Braum", "Briar", "Caitlyn", "Camille", "Cassiopeia", 
+            "Cho'Gath", "Corki", "Darius", "Diana", "Dr. Mundo", "Draven", "Ekko", "Elise", "Evelynn", "Ezreal", 
+            "Fiddlesticks", "Fiora", "Fizz", "Galio", "Gangplank", "Garen", "Gnar", "Gragas", "Graves", "Gwen", 
+            "Hecarim", "Heimerdinger", "Hwei", "Illaoi", "Irelia", "Ivern", "Janna", "Jarvan IV", "Jax", "Jayce", 
+            "Jhin", "Jinx", "K'Sante", "Kai'Sa", "Kalista", "Karma", "Karthus", "Kassadin", "Katarina", "Kayle", 
+            "Kayn", "Kennen", "Kha'Zix", "Kindred", "Kled", "Kog'Maw", "LeBlanc", "Lee Sin", "Leona", "Lillia", 
+            "Lissandra", "Lucian", "Lulu", "Lux", "Malphite", "Malzahar", "Maokai", "Master Yi", "Milio", "Miss Fortune", 
+            "Mordekaiser", "Morgana", "Naafiri", "Nami", "Nasus", "Nautilus", "Neeko", "Nidalee", "Nilah", "Nocturne", 
+            "Nunu & Willump", "Olaf", "Orianna", "Ornn", "Pantheon", "Poppy", "Pyke", "Qiyana", "Quinn", "Rakan", 
+            "Rammus", "Rek'Sai", "Rell", "Renata Glasc", "Renekton", "Rengar", "Riven", "Rumble", "Ryze", "Samira", 
+            "Sejuani", "Senna", "Seraphine", "Sett", "Shaco", "Shen", "Shyvana", "Singed", "Sion", "Sivir", "Skarner", 
+            "Smolder", "Sona", "Soraka", "Swain", "Sylas", "Syndra", "Tahm Kench", "Taliyah", "Talon", "Taric", "Teemo", 
+            "Thresh", "Tristana", "Trundle", "Tryndamere", "Twisted Fate", "Twitch", "Udyr", "Urgot", "Varus", "Vayne", 
+            "Veigar", "Vel'Koz", "Vex", "Vi", "Viego", "Viktor", "Vladimir", "Volibear", "Warwick", "Wukong", "Xayah", 
+            "Xerath", "Xin Zhao", "Yasuo", "Yone", "Yorick", "Yuumi", "Zac", "Zed", "Zeri", "Ziggs", "Zilean", "Zoe", "Zyra"
+        ];
+
+        // Mapeo para nombres de archivos de Riot (Data Dragon)
+        const nameMapping = {
+            "Bel'Veth": "Belveth", "Cho'Gath": "Chogath", "Dr. Mundo": "DrMundo", "Jarvan IV": "JarvanIV",
+            "K'Sante": "KSante", "Kai'Sa": "Kaisa", "Kha'Zix": "Khazix", "Kog'Maw": "KogMaw",
+            "LeBlanc": "Leblanc", "Lee Sin": "LeeSin", "Master Yi": "MasterYi", "Miss Fortune": "MissFortune",
+            "Nunu & Willump": "Nunu", "Rek'Sai": "RekSai", "Renata Glasc": "Renata", "Tahm Kench": "TahmKench",
+            "Twisted Fate": "TwistedFate", "Vel'Koz": "Velkoz", "Wukong": "MonkeyKing", "Xin Zhao": "XinZhao"
+        };
+
+        function getImgUrl(name) {
+            let fileName = nameMapping[name] || name.replace(/[^a-zA-Z]/g, '');
+            return `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${fileName}_0.jpg`;
+        }
+
+        const augments = [
+            "Prismatic Egg", "Earthwake", "Trueshot Prodigy", "Jeweled Gauntlet", "Blade Waltz", "Mystic Punch", 
+            "Giant Slayer", "Infernal Soul", "Mountain Soul", "Ocean Soul", "Cloud Soul", "Back to Basics", 
+            "Ultimate Revolution", "Goliath", "Mad Scientist", "Chain Lightning"
+        ];
+
+        // CLASIFICACIÓN DE ROLES
+        const roles = {
+            AD: ["Aatrox", "Aphelios", "Ashe", "Bel'Veth", "Briar", "Caitlyn", "Camille", "Corki", "Darius", "Draven", "Ezreal", "Fiora", "Gangplank", "Garen", "Gnar", "Graves", "Hecarim", "Illaoi", "Irelia", "Jarvan IV", "Jax", "Jayce", "Jhin", "Jinx", "Kai'Sa", "Kalista", "Kayn", "Kha'Zix", "Kindred", "Kled", "Kog'Maw", "Lee Sin", "Lucian", "Master Yi", "Miss Fortune", "Naafiri", "Nasus", "Nilah", "Nocturne", "Olaf", "Pantheon", "Pyke", "Qiyana", "Quinn", "Rek'Sai", "Renekton", "Rengar", "Riven", "Samira", "Senna", "Sett", "Shaco", "Sivir", "Smolder", "Talon", "Tristana", "Trundle", "Tryndamere", "Twitch", "Udyr", "Urgot", "Varus", "Vayne", "Vi", "Viego", "Volibear", "Warwick", "Wukong", "Xayah", "Xin Zhao", "Yasuo", "Yone", "Yorick", "Zed", "Zeri"],
+            TANK: ["Alistar", "Amumu", "Blitzcrank", "Braum", "Cho'Gath", "Dr. Mundo", "Galio", "K'Sante", "Leona", "Malphite", "Maokai", "Nautilus", "Nunu & Willump", "Ornn", "Poppy", "Rammus", "Rell", "Sejuani", "Shen", "Sion", "Skarner", "Tahm Kench", "Taric", "Thresh", "Zac"],
+            AP: ["Ahri", "Akali", "Anivia", "Annie", "Aurelion Sol", "Azir", "Bard", "Brand", "Cassiopeia", "Diana", "Ekko", "Elise", "Evelynn", "Fiddlesticks", "Fizz", "Gragas", "Gwen", "Heimerdinger", "Hwei", "Ivern", "Janna", "Karma", "Karthus", "Kassadin", "Katarina", "Kayle", "Kennen", "LeBlanc", "Lillia", "Lissandra", "Lulu", "Lux", "Malzahar", "Milio", "Mordekaiser", "Morgana", "Nami", "Neeko", "Nidalee", "Orianna", "Rakan", "Renata Glasc", "Rumble", "Ryze", "Seraphine", "Shyvana", "Singed", "Sona", "Soraka", "Swain", "Sylas", "Syndra", "Taliyah", "Teemo", "Twisted Fate", "Veigar", "Vel'Koz", "Vex", "Viktor", "Vladimir", "Xerath", "Yuumi", "Ziggs", "Zilean", "Zoe", "Zyra"]
+        };
+
+        // POOLS DE OBJETOS POR ROL
+        const itemPools = {
+            AD: {
+                boots: ["Berserker's Greaves", "Plated Steelcaps", "Mercury's Treads", "Ionian Boots of Lucidity", "Boots of Swiftness"],
+                prismatic: ["Divine Sunderer", "Goredrinker", "Galeforce", "Prowler's Claw", "Hamstringer", "Sword of the Divine", "Gambler's Blade", "Darksteel Talons", "Sanguine Gift", "Fulmination"],
+                normal: ["Infinity Edge", "Bloodthirster", "Ravenous Hydra", "Trinity Force", "Blade of the Ruined King", "Kraken Slayer", "Phantom Dancer", "Rapid Firecannon", "The Collector", "Lord Dominik's Regards", "Eclipse", "Voltaic Cyclosword", "Youmuu's Ghostblade", "Axiom Arc", "Spear of Shojin", "Profane Hydra", "Hubris", "Opportunity", "Terminus", "Guardian Angel", "Wit's End", "Guinsoo's Rageblade", "Runaan's Hurricane", "Statikk Shiv", "Navori Flickerblade", "Essence Reaver", "Manamune", "Serylda's Grudge", "Chempunk Chainsword", "Serpent's Fang", "Edge of Night", "Black Cleaver", "Death's Dance", "Maw of Malmortius", "Sterak's Gage", "Sundered Sky", "Titanic Hydra", "Experimental Hexplate", "Overlord's Bloodmail", "Yun Tal Wildarrows", "Stridebreaker", "Hullbreaker", "Mortal Reminder"]
+            },
+            AP: {
+                boots: ["Sorcerer's Shoes", "Ionian Boots of Lucidity", "Mercury's Treads", "Boots of Swiftness"],
+                prismatic: ["Everfrost", "Crown of the Shattered Queen", "Night Harvester", "Moonflair Spellblade", "Runecarver", "Detonation Orb", "Reality Fracture", "Innervating Locket"],
+                normal: ["Rabadon's Deathcap", "Zhonya's Hourglass", "Luden's Companion", "Liandry's Torment", "Rylai's Crystal Scepter", "Void Staff", "Shadowflame", "Nashor's Tooth", "Lich Bane", "Archangel's Staff", "Malignance", "Stormsurge", "Cosmic Drive", "Blackfire Torch", "Horizon Focus", "Riftmaker", "Rod of Ages", "Cryptbloom", "Morellonomicon", "Banshee's Veil", "Imperial Mandate", "Staff of Flowing Water", "Ardent Censer", "Moonstone Renewer", "Echoes of Helia", "Shurelya's Battlesong", "Dawncore", "Hextech Rocketbelt"]
+            },
+            TANK: {
+                boots: ["Plated Steelcaps", "Mercury's Treads", "Boots of Swiftness", "Ionian Boots of Lucidity"],
+                prismatic: ["Turbo Chemtank", "Radiant Virtue", "Evenshroud", "Demon King's Crown", "Dragonheart", "Cruelty", "Force of Entropy"],
+                normal: ["Heartsteel", "Jak'Sho", "Sunfire Aegis", "Thornmail", "Spirit Visage", "Warmog's Armor", "Frozen Heart", "Randuin's Omen", "Force of Nature", "Kaenic Rookern", "Unending Despair", "Hollow Radiance", "Iceborn Gauntlet", "Abyssal Mask", "Zeke's Convergence", "Knight's Vow", "Locket of the Iron Solari", "Redemption", "Mikael's Blessing", "Trailblazer", "Dead Man's Plate", "Winter's Approach"]
+            }
+        };
+
+        let itemData = {};
+        let ddragonVersion = "14.24.1";
+
+        // Cargar datos de items al inicio
+        fetch("https://ddragon.leagueoflegends.com/api/versions.json")
+            .then(res => res.json())
+            .then(versions => {
+                ddragonVersion = versions[0];
+                return fetch(`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/en_US/item.json`);
+            })
+            .then(res => res.json())
+            .then(data => {
+                Object.keys(data.data).forEach(id => {
+                    const item = data.data[id];
+                    itemData[item.name] = id;
+                });
+            });
+
+        // Mapa manual para corregir nombres que no coinciden exactamente
+        const manualMap = {
+            "Jak'Sho": "Jak'Sho, The Protean",
+            "Duskblade": "Duskblade of Draktharr"
+        };
+
+        let spinning = false;
+
+        function generateDuo() {
+            if (spinning) return;
+            spinning = true;
+            
+            const btn = document.getElementById('rerollBtn');
+            btn.innerText = "ROLLING...";
+            
+            // Resetear estilos
+            document.getElementById('c1').style.display = "none";
+            document.getElementById('c2').style.display = "none";
+            document.getElementById('build1').style.display = "none";
+            document.getElementById('build2').style.display = "none";
+            document.getElementById('name1').innerText = "";
+            document.getElementById('name2').innerText = "";
+            document.getElementById('name1').classList.remove('reveal');
+            document.getElementById('name2').classList.remove('reveal');
+
+            // Preparar Reels
+            const r1 = document.getElementById('reel1');
+            const r2 = document.getElementById('reel2');
+            
+            // Elegir ganadores
+            const winner1 = champions[Math.floor(Math.random() * champions.length)];
+            let winner2 = champions[Math.floor(Math.random() * champions.length)];
+            while(winner1 === winner2) winner2 = champions[Math.floor(Math.random() * champions.length)];
+
+            // Función para llenar reel
+            const fillReel = (reel, winner, count) => {
+                let html = "";
+                // Imágenes random previas
+                for(let i=0; i<count; i++) {
+                    const rand = champions[Math.floor(Math.random() * champions.length)];
+                    html += `<img src="${getImgUrl(rand)}" alt="champ">`;
+                }
+                // Ganador al final
+                html += `<img src="${getImgUrl(winner)}" alt="${winner}">`;
+                reel.innerHTML = html;
+                
+                // Resetear posición
+                reel.style.transition = "none";
+                reel.style.transform = "translateY(0)";
+            };
+
+            // Llenar reels (Reel 1: 30 imgs, Reel 2: 45 imgs)
+            fillReel(r1, winner1, 30);
+            fillReel(r2, winner2, 45);
+
+            // Forzar reflow para que el navegador pille el reset
+            r1.offsetHeight; 
+            
+            // ANIMAR (Mover hacia arriba)
+            // Altura de imagen = 400px. 
+            // Reel 1: Mover 30 imagenes * 400px
+            r1.style.transition = "transform 3s cubic-bezier(0.25, 1, 0.5, 1)";
+            r1.style.transform = `translateY(-${30 * 400}px)`;
+            
+            r2.style.transition = "transform 4s cubic-bezier(0.25, 1, 0.5, 1)";
+            r2.style.transform = `translateY(-${45 * 400}px)`;
+
+            // Preparar nombres aleatorios
+            const p1 = JSON.parse(localStorage.getItem('profile1')) || {name: 'INVOCADOR 1'};
+            const p2 = JSON.parse(localStorage.getItem('profile2')) || {name: 'INVOCADOR 2'};
+            let names = [p1.name === 'LINK ACCOUNT' ? 'INVOCADOR 1' : p1.name, p2.name === 'LINK ACCOUNT' ? 'INVOCADOR 2' : p2.name];
+            if(Math.random() > 0.5) names.reverse();
+
+            // Finalizar Reel 1
+            setTimeout(() => {
+                document.getElementById('c1').innerText = winner1;
+                document.getElementById('c1').style.display = "block";
+                document.getElementById('c1').style.color = "#c8aa6e";
+                document.getElementById('name1').innerText = names[0];
+                document.getElementById('name1').classList.add('reveal');
+                generateBuild('build1', winner1);
+            }, 3000);
+
+            // Finalizar Reel 2 y Todo
+            setTimeout(() => {
+                document.getElementById('c2').innerText = winner2;
+                document.getElementById('c2').style.display = "block";
+                document.getElementById('c2').style.color = "#c8aa6e";
+                document.getElementById('name2').innerText = names[1];
+                document.getElementById('name2').classList.add('reveal');
+                generateBuild('build2', winner2);
+                
+                btn.innerText = "REROLL DUO";
+                spinning = false;
+            }, 4000);
+        }
+
+        function generateBuild(elementId, championName) {
+            // Determinar rol del campeón
+            let role = "AD"; // Default
+            if (roles.TANK.includes(championName)) role = "TANK";
+            else if (roles.AP.includes(championName)) role = "AP";
+            else if (roles.AD.includes(championName)) role = "AD";
+            else {
+                // Si no está en la lista (ej: nuevo champ), random
+                const keys = ["AD", "AP", "TANK"];
+                role = keys[Math.floor(Math.random() * keys.length)];
+            }
+
+            const pool = itemPools[role];
+            const boot = pool.boots[Math.floor(Math.random() * pool.boots.length)];
+            const prismatic = pool.prismatic[Math.floor(Math.random() * pool.prismatic.length)];
+            
+            // 4 Items aleatorios sin repetir
+            let items = [];
+            while(items.length < 4) {
+                let item = pool.normal[Math.floor(Math.random() * pool.normal.length)];
+                if(!items.includes(item)) items.push(item);
+            }
+
+            // Helper para imagen
+            const getIcon = (name) => {
+                // Intentar nombre directo o buscar en el mapa manual
+                const id = itemData[name] || itemData[manualMap[name]];
+                if(id) return `<img src="https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${id}.png" class="item-icon" title="${name}">`;
+                return `<div class="item-icon" style="display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#fff;background:#333;">?</div>`;
+            };
+
+            const html = `
+                <div class="build-title">BUILD RECOMENDADA</div>
+                
+                <div class="build-section">
+                    <div class="build-section-title">OBJETOS</div>
+                    <div class="item-grid">
+                        ${getIcon(prismatic)}
+                        ${getIcon(boot)}
+                        ${items.map(i => getIcon(i)).join('')}
+                    </div>
+                </div>
+            `;
+            
+            const el = document.getElementById(elementId);
+            el.innerHTML = html;
+            el.style.display = "block";
+        }
+    </script>
+</body>
+</html>

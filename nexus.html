@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATINUM NEXUS // GAMES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <button class="config-btn" onclick="toggleConfig()">⚙️ SYSTEM CONFIG</button>
+    <button id="returnBtn" class="config-btn" style="left: auto; right: 20px;" onclick="closeApp()">↩ RETURN TO HUB</button>
+    
+    <div id="configPanel" class="config-panel">
+        <div class="config-item">
+            <label>COLOR PRINCIPAL (NEON)</label>
+            <input type="color" id="col-primary" value="#00f3ff">
+        </div>
+        <div class="config-item">
+            <label>COLOR SECUNDARIO</label>
+            <input type="color" id="col-secondary" value="#ff00ff">
+        </div>
+        <div class="config-item">
+            <label>COLOR DE FONDO</label>
+            <input type="color" id="col-bg" value="#050505">
+        </div>
+        <div class="config-item">
+            <label>RAWG API KEY (GRATIS)</label>
+            <input type="text" id="api-key" placeholder="PEGAR KEY AQUI" style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); color: white; padding: 5px;">
+        </div>
+        <div class="config-item">
+            <label>COMPARTIR DATOS (BACKUP)</label>
+            <button onclick="exportData()" style="width: 100%; margin-bottom: 5px; font-size: 0.8rem;">COPIAR CÓDIGO DE DATOS</button>
+            <button onclick="importData()" style="width: 100%; font-size: 0.8rem; background: #333; border-color: #555;">CARGAR DATOS DE OTRO</button>
+        </div>
+        <button onclick="resetColors()" style="width: 100%; margin-top: 10px;">RESET DEFAULT</button>
+    </div>
+
+    <!-- Profile Editor Modal -->
+    <div id="profileEditor" class="config-panel" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 320px; display: none;">
+        <h3 style="margin-bottom: 1rem; color: var(--neon-pink); font-family: 'Orbitron', sans-serif;">LINK PROFILE DATA</h3>
+        <div class="config-item">
+            <label>PLATAFORMA (Ej: STEAM)</label>
+            <input type="text" id="edit-platform" placeholder="STEAM / PSN">
+        </div>
+        <div class="config-item">
+            <label>USUARIO</label>
+            <input type="text" id="edit-name" placeholder="Tu Nick">
+        </div>
+        <div class="config-item">
+            <label>NIVEL / RANGO</label>
+            <input type="text" id="edit-level" placeholder="Ej: LVL 69">
+        </div>
+        <div class="config-item">
+            <label>URL AVATAR (Link Imagen)</label>
+            <input type="text" id="edit-avatar" placeholder="https://...">
+        </div>
+        <div class="config-item">
+            <label>URL PERFIL (Link al hacer click)</label>
+            <input type="text" id="edit-url" placeholder="https://steamcommunity.com/id/...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="saveProfile()" style="flex: 1;">SAVE</button>
+            <button onclick="closeProfileEditor()" style="flex: 1; background: #333; color: #aaa; box-shadow: none;">CANCEL</button>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <!-- Profile Slot 1 -->
+        <div class="profile-card" onclick="visitProfile(1)">
+            <div class="profile-avatar" id="p1-avatar"></div>
+            <div class="profile-details">
+                <div class="profile-name" id="p1-name">LINK ACCOUNT 01</div>
+                <div class="profile-level" id="p1-level">OFFLINE</div>
+            </div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(1)">⚙️</button>
+        </div>
+        <!-- Profile Slot 2 -->
+        <div class="profile-card" onclick="visitProfile(2)">
+            <div class="profile-avatar" id="p2-avatar"></div>
+            <div class="profile-details">
+                <div class="profile-name" id="p2-name">LINK ACCOUNT 02</div>
+                <div class="profile-level" id="p2-level">OFFLINE</div>
+            </div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(2)">⚙️</button>
+        </div>
+    </div>
+
+    <div class="clock-panel">
+        <div class="clock-item">
+            <div class="clock-label">🇪🇸 ESPAÑA</div>
+            <div class="clock-time" id="clock-esp">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇸🇴 SOMALIA</div>
+            <div class="clock-time" id="clock-som">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇺🇸 USA (NY)</div>
+            <div class="clock-time" id="clock-usa">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇸🇦 ARABIA SAUDITA</div>
+            <div class="clock-time" id="clock-sa">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇲🇦 MARRUECOS</div>
+            <div class="clock-time" id="clock-ma">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇻🇳 VIETNAM</div>
+            <div class="clock-time" id="clock-vn">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇧🇩 BANGLADESH</div>
+            <div class="clock-time" id="clock-bd">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇰🇪 KENYA</div>
+            <div class="clock-time" id="clock-ke">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">🇮🇳 INDIA</div>
+            <div class="clock-time" id="clock-in">00:00:00</div>
+        </div>
+        <div class="clock-item">
+            <div class="clock-label">✈️ 🏢🏢</div>
+            <div class="clock-time" id="clock-meme">00:00:00</div>
+        </div>
+    </div>
+
+    <!-- MINI LOCAL PLAYER -->
+    <div class="mini-player">
+        <div style="font-size: 0.8rem; color: var(--neon-cyan); font-family: 'Orbitron'; margin-bottom: 5px;">💿 SYSTEM AUDIO</div>
+        <div id="sys-controls">
+            <button onclick="connectSystemAudio()" style="width: 100%; padding: 8px; font-size: 0.7rem; background: #374151; border: 1px solid #4b5563; color: #fff;">▶ CONNECT LO-FI STREAM</button>
+        </div>
+        
+        <!-- Visualizador -->
+        <div id="sys-visualizer" class="visualizer">
+            <div class="bar" style="animation-duration: 0.9s;"></div>
+            <div class="bar" style="animation-duration: 1.2s;"></div>
+            <div class="bar" style="animation-duration: 0.8s;"></div>
+            <div class="bar" style="animation-duration: 1.1s;"></div>
+            <div class="bar" style="animation-duration: 1.0s;"></div>
+        </div>
+
+        <!-- Iframe Oculto -->
+        <div id="sys-audio-frame" style="width: 0; height: 0; overflow: hidden;"></div>
+    </div>
+
+    <!-- NEXUS VIEW (TU LISTA DE JUEGOS) -->
+    <div id="nexus-view" class="container">
+        <header>
+            <h1>Platinum Nexus</h1>
+            <p>SYSTEM STATUS: ONLINE // USER: ADMIN</p>
+        </header>
+
+        <div class="input-panel">
+            <div class="stats-bar">
+                <span id="total-count">TOTAL PLATINUMS: 00</span>
+                <span id="player-rank" class="rank-display">RANK: CALIBRATING...</span>
+                <span>SYNC: AUTO</span>
+            </div>
+            <div class="input-group">
+                <input type="text" id="gameName" placeholder="NOMBRE DEL JUEGO" autocomplete="off">
+                <input type="text" id="platform" placeholder="PLATAFORMA (PS5, STEAM...)" autocomplete="off">
+            </div>
+            <button id="addBtn" onclick="addGame()">INITIALIZE UPLOAD</button>
+        </div>
+
+        <div id="gameList" class="game-list">
+            <!-- Games will be injected here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

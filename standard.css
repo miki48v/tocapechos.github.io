@@ -1,0 +1,216 @@
+/* c:\Users\jvila\Documents\GitHub\tocapechos.github.io\standard.css */
+:root {
+    --std-primary: #ffffff; /* Blanco para contraste sobre oscuro */
+    --std-bg: #121212;      /* Negro suave (Dark Minimalist) */
+    --card-bg: #1e1e1e;     /* Gris muy oscuro para tarjetas */
+    --text-main: #e5e5e5;   /* Blanco roto */
+    --text-muted: #a3a3a3;  /* Gris medio */
+    --std-border: #333333;  /* Bordes sutiles */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--std-bg);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+/* Contenedores */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.05rem;
+}
+
+p {
+    color: var(--text-muted);
+}
+
+/* Botones Estándar */
+button {
+    background-color: var(--std-primary);
+    color: #000000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: none;
+}
+
+button:hover {
+    background-color: #cccccc;
+    color: #000000;
+    box-shadow: none;
+}
+
+/* Estilos específicos del Index */
+#mainMenu {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--std-bg);
+}
+
+.start-btn {
+    font-size: 1.2rem;
+    padding: 15px 40px;
+    margin-top: 2rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+/* Estilos del Hub (Tarjetas limpias) */
+.hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.hub-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: 1px solid var(--std-border);
+    box-shadow: none;
+}
+
+.hub-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--std-primary);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.hub-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.hub-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+/* Adaptación de Widgets (Reloj, Perfil, Config) al estilo limpio */
+.config-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--std-border);
+}
+
+.config-panel {
+    position: fixed;
+    top: 70px;
+    left: 20px;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid var(--std-border);
+    width: 300px;
+    display: none;
+    z-index: 1000;
+}
+.config-panel.active { display: block; }
+
+.config-item label { display: block; margin-bottom: 5px; font-weight: 500; }
+.config-item input { 
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #d1d5db; 
+    border-radius: 4px; 
+    margin-bottom: 10px;
+}
+
+/* Perfiles flotantes simplificados */
+.profile-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-card {
+    background: var(--card-bg);
+    padding: 10px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: none;
+    border: 1px solid var(--std-border);
+    width: auto;
+    min-width: 200px;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333;
+    background-size: cover;
+}
+
+.profile-name { font-weight: bold; font-size: 0.9rem; }
+.profile-level { font-size: 0.8rem; color: var(--text-muted); }
+.profile-edit-btn { background: transparent; color: #9ca3af; padding: 0; box-shadow: none; margin-left: auto; margin-right: 10px;}
+
+/* Relojes y Player ocultos o simplificados para no ensuciar */
+.clock-panel {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    font-size: 0.8rem;
+}
+.clock-time { font-weight: bold; font-family: monospace; font-size: 1.1rem; }
+
+.mini-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 200px;
+}
