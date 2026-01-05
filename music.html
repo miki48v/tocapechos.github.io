@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATINUM NEXUS // AUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #ffb000; /* Ámbar Retro */
+            --neon-pink: #ff5722; /* Naranja Quemado */
+            --bg-color: #1a1510;  /* Marrón muy oscuro */
+            --panel-bg: rgba(255, 176, 0, 0.05);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Patrón de puntos sutil */
+            background-image: radial-gradient(#2c2c2c 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .config-btn {
+            position: fixed; top: 20px; left: 20px;
+            background: rgba(0,0,0,0.8); border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan); padding: 10px 20px; cursor: pointer;
+            font-family: 'Orbitron'; z-index: 100; transition: 0.3s;
+        }
+        .config-btn:hover { background: var(--neon-cyan); color: black; box-shadow: 0 0 15px var(--neon-cyan); }
+
+        .container {
+            width: 100%; max-width: 1000px; padding: 80px 20px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron'; font-size: 3rem; color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan); margin-bottom: 10px;
+            letter-spacing: 5px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+
+        /* VISUALIZER */
+        .deck-container {
+            background: #222; 
+            border: 8px solid #111; 
+            border-radius: 20px;
+            padding: 20px; margin-bottom: 40px; position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px #000;
+            /* Textura de rejilla de altavoz */
+            background-image: linear-gradient(45deg, #222 25%, #252525 25%, #252525 50%, #222 50%, #222 75%, #252525 75%, #252525 100%);
+            background-size: 10px 10px;
+        }
+        
+        .screen {
+            background: #101010; height: 150px; 
+            border: 4px solid #555;
+            border-radius: 10px;
+            margin-bottom: 20px; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+            box-shadow: inset 0 0 20px #000;
+        }
+
+        /* CASSETTE REELS ANIMATION */
+        .cassette-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            gap: 60px; z-index: 0; opacity: 0.4; pointer-events: none;
+        }
+        .reel {
+            width: 70px; height: 70px;
+            border: 3px solid #444; border-radius: 50%;
+            position: relative;
+            background: radial-gradient(circle, transparent 20%, #222 21%, #222 30%, transparent 31%);
+        }
+        /* Dientes del engranaje */
+        .reel::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-conic-gradient(transparent 0deg 15deg, #444 15deg 30deg);
+            border-radius: 50%;
+            mask: radial-gradient(transparent 40%, black 41%);
+            -webkit-mask: radial-gradient(transparent 40%, black 41%);
+        }
+
+        .visualizer-bars {
+            display: flex; gap: 4px; /* Un poco menos de espacio */
+            align-items: flex-end; height: 100px;
+            z-index: 1; /* Por encima de los reels */
+        }
+        .v-bar {
+            width: 12px; /* Más finas */
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: equalizer 1s infinite ease-in-out;
+            animation-play-state: paused; /* Pausada por defecto */
+        }
+        
+        /* ESTADOS DE ANIMACIÓN (Activados por JS en el padre) */
+        .deck-container.playing .reel { animation: spinReel 3s linear infinite; }
+        
+        .deck-container.playing .v-bar {
+            animation-play-state: running; /* Se activa con la clase */
+        }
+        @keyframes equalizer {
+            0% { height: 5%; }
+            10% { height: 40%; }
+            25% { height: 75%; }
+            40% { height: 50%; }
+            50% { height: 95%; }
+            75% { height: 30%; }
+            90% { height: 60%; }
+            100% { height: 5%; }
+        }
+        @keyframes spinReel {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .status-text {
+            position: absolute; top: 10px; left: 10px;
+            color: var(--neon-cyan); font-size: 0.8rem;
+        }
+
+        /* TAPES GRID */
+        .tapes-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .tape-card {
+            background: #2a2a2a; border: 2px solid #444; padding: 15px;
+            cursor: pointer; transition: 0.2s; position: relative;
+            border-radius: 5px;
+            /* Efecto botón físico 3D */
+            box-shadow: 0 5px 0 #111;
+        }
+        .tape-card:hover {
+            border-color: var(--neon-cyan); transform: translateY(-2px);
+            background: #333;
+            box-shadow: 0 7px 0 #111;
+            color: var(--neon-cyan);
+        }
+        .tape-card:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #111;
+        }
+        .tape-card.active {
+            border-color: var(--neon-cyan); background: #332200;
+            box-shadow: 0 2px 0 #111, inset 0 0 10px rgba(255, 176, 0, 0.2);
+            transform: translateY(3px);
+            color: var(--neon-cyan);
+        }
+
+        .tape-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .tape-title { font-family: 'Share Tech Mono'; font-weight: bold; font-size: 1.2rem; }
+        .tape-desc { font-size: 0.8rem; color: #888; margin-top: 5px; }
+
+        /* HIDDEN PLAYER */
+        #audio-frame { display: none; }
+        
+        /* FILTRO DE GRANO (RUIDO) */
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 999; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* SLIDER DE VOLUMEN */
+        .vol-control-container {
+            display: flex; align-items: center; gap: 10px;
+            background: #111; padding: 10px 20px; border-radius: 30px;
+            border: 1px solid #333;
+        }
+        input[type=range] {
+            -webkit-appearance: none; width: 100px; background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--neon-cyan); cursor: pointer; margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; background: #444; border-radius: 2px;
+        }
+
+        /* PROFILE SYSTEM ADAPTED FOR VINTAGE RADIO */
+        .profile-container {
+            position: fixed; bottom: 20px; left: 20px;
+            display: flex; flex-direction: column; gap: 15px; z-index: 100;
+        }
+        .profile-card {
+            background: #2a2a2a; border: 2px solid #444; padding: 10px;
+            display: flex; align-items: center; gap: 15px; width: 280px;
+            cursor: pointer; transition: 0.2s; border-radius: 5px;
+            box-shadow: 0 5px 0 #111;
+        }
+        .profile-card:hover { border-color: var(--neon-cyan); transform: translateY(-2px); box-shadow: 0 7px 0 #111; }
+        .profile-card:active { transform: translateY(4px); box-shadow: 0 1px 0 #111; }
+        .profile-avatar {
+            width: 50px; height: 50px; background-color: #333;
+            background-size: cover; background-position: center;
+            border: 2px solid #555; border-radius: 50%;
+        }
+        .profile-details { flex-grow: 1; }
+        .profile-name { font-family: 'Share Tech Mono'; font-size: 1.2rem; color: var(--neon-cyan); }
+        .profile-level { font-size: 0.8rem; color: #888; }
+        .profile-edit-btn {
+            background: transparent !important; border: none !important;
+            color: #666 !important; padding: 0 !important; font-size: 1.2rem;
+            box-shadow: none !important; width: auto !important; height: auto !important;
+        }
+        .profile-edit-btn:hover { color: var(--neon-cyan) !important; }
+
+        /* EDITOR MODAL */
+        .config-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #222; border: 4px solid #111; padding: 2rem;
+            z-index: 2000; width: 320px; display: none;
+            box-shadow: 0 0 0 1000px rgba(0,0,0,0.8);
+            border-radius: 10px;
+        }
+        .config-item { margin-bottom: 1rem; text-align: left; }
+        .config-item label { display: block; color: var(--neon-cyan); font-size: 0.8rem; margin-bottom: 5px; font-family: 'Share Tech Mono'; }
+        .config-item input { 
+            width: 100%; background: #111; border: 1px solid #444; 
+            color: var(--neon-cyan); padding: 8px; font-family: 'Share Tech Mono'; 
+        }
+        .modal-btn {
+            flex: 1; background: #444; border: 2px solid #222; color: #aaa;
+            padding: 10px; font-family: 'Share Tech Mono'; cursor: pointer;
+            box-shadow: 0 4px 0 #111; margin-top: 10px;
+        }
+        .modal-btn:hover { background: #555; color: white; }
+        .modal-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #111; }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+
+    <button class="config-btn" onclick="window.location.href='hub.html'">↩ RETURN TO HUB</button>
+
+    <!-- Profile Editor Modal -->
+    <div id="profileEditor" class="config-panel">
+        <h3 style="margin-bottom: 1rem; color: var(--neon-cyan); font-family: 'Share Tech Mono'; font-size: 1.5rem; border-bottom: 2px solid #444; padding-bottom: 10px;">LINK SPOTIFY</h3>
+        <div class="config-item"><label>PLATAFORMA</label><input type="text" id="edit-platform" placeholder="SPOTIFY"></div>
+        <div class="config-item"><label>USUARIO</label><input type="text" id="edit-name" placeholder="Tu Nick"></div>
+        <div class="config-item"><label>ESTADO / PLAYLIST</label><input type="text" id="edit-level" placeholder="Vibing to..."></div>
+        <div class="config-item"><label>URL AVATAR</label><input type="text" id="edit-avatar" placeholder="https://..."></div>
+        <div class="config-item"><label>URL PERFIL</label><input type="text" id="edit-url" placeholder="Link a Spotify"></div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="saveProfile()" class="modal-btn" style="color: var(--neon-cyan);">GUARDAR</button>
+            <button onclick="closeProfileEditor()" class="modal-btn">CANCELAR</button>
+        </div>
+    </div>
+
+    <!-- Perfiles -->
+    <div class="profile-container">
+        <div class="profile-card" onclick="visitProfile(1)">
+            <div class="profile-avatar" id="p1-avatar"></div>
+            <div class="profile-details">
+                <div class="profile-name" id="p1-name">LINK ACCOUNT 01</div>
+                <div class="profile-level" id="p1-level">OFFLINE</div>
+            </div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(1)">⚙️</button>
+        </div>
+        <div class="profile-card" onclick="visitProfile(2)">
+            <div class="profile-avatar" id="p2-avatar"></div>
+            <div class="profile-details">
+                <div class="profile-name" id="p2-name">LINK ACCOUNT 02</div>
+                <div class="profile-level" id="p2-level">OFFLINE</div>
+            </div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(2)">⚙️</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>VINTAGE RADIO</h1>
+        <p style="color: #888; margin-bottom: 40px;">TUNING FREQUENCY... //</p>
+
+        <div class="deck-container">
+            <div class="screen">
+                <div class="status-text" id="status-display">WAITING FOR SIGNAL...</div>
+                <!-- Cassette Reels -->
+                <div class="cassette-overlay">
+                    <div class="reel"></div>
+                    <div class="reel"></div>
+                </div>
+                <div class="visualizer-bars" id="viz-bars" style="opacity: 0.2;">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
+                <!-- Botón de STOP estilo perilla redonda -->
+                <button onclick="stopAudio()" style="background: #444; border: 2px solid #222; color: #aaa; padding: 10px 30px; font-family: 'Share Tech Mono'; cursor: pointer; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 0 #111; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">■</button>
+                
+                <!-- Control de Volumen -->
+                <div class="vol-control-container">
+                    <span style="font-size: 1.2rem;">🔊</span>
+                    <input type="range" id="vol-slider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+                </div>
+            </div>
+        </div>
+
+        <div class="tapes-grid">
+            <div class="tape-card" onclick="playStation(this, 'jfKfPfyJRdk', 'LO-FI GIRL')">
+                <span class="tape-icon">📻</span>
+                <div class="tape-title">FM 88.5</div>
+                <div class="tape-desc">Lo-Fi Study</div>
+            </div>
+            <div class="tape-card" onclick="playStation(this, '4xDzrJKXOOY', 'SYNTHWAVE RADIO')">
+                <span class="tape-icon">📡</span>
+                <div class="tape-title">AM 102.4</div>
+                <div class="tape-desc">Synthwave</div>
+            </div>
+            <div class="tape-card" onclick="playStation(this, '5qap5aO4i9A', 'LO-FI HIP HOP')">
+                <span class="tape-icon">🎙️</span>
+                <div class="tape-title">FM 94.2</div>
+                <div class="tape-desc">Chillhop</div>
+            </div>
+            <div class="tape-card" onclick="playStation(this, 'S320S3s5oUI', 'PHONK GYM')">
+                <span class="tape-icon">⚡</span>
+                <div class="tape-title">AM 55.0</div>
+                <div class="tape-desc">Phonk / Drift</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="audio-frame"></div>
+    
+    <!-- Cargar API de YouTube -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        const viz = document.getElementById('viz-bars');
+        const deck = document.querySelector('.deck-container');
+
+        // Generar barras del visualizador
+        function setupVisualizer() {
+            viz.innerHTML = ''; // Limpiar barras existentes
+            const barCount = 25; // Más barras para un look más denso
+            for(let i=0; i < barCount; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'v-bar';
+                // Duración y retraso aleatorios para que parezca más orgánico
+                bar.style.animationDuration = (0.8 + Math.random() * 0.7) + 's';
+                bar.style.animationDelay = (Math.random() * -1) + 's';
+                viz.appendChild(bar);
+            }
+        }
+
+        // --- GENERADOR DE ESTÁTICA (RUIDO BLANCO) ---
+        function playStatic() {
+            // Creamos el contexto de audio
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            
+            const ctx = new AudioContext();
+            // Duración del ruido: 0.5 segundos
+            const bufferSize = ctx.sampleRate * 0.5;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            // Llenamos el buffer con valores aleatorios (Ruido)
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+            
+            // Control de volumen (Fade out para que no sea molesto)
+            const gainNode = ctx.createGain();
+            gainNode.gain.setValueAtTime(0.05, ctx.currentTime); // Volumen bajito
+            gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
+            noise.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            noise.start();
+        }
+
+        // --- YOUTUBE API PLAYER ---
+        let player;
+        let currentVol = 50;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('audio-frame', {
+                height: '0',
+                width: '0',
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'disablekb': 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.setVolume(currentVol);
+        }
+
+        function setVolume(val) {
+            currentVol = val;
+            if(player && player.setVolume) {
+                player.setVolume(val);
+            }
+        }
+
+        function playStation(card, videoId, name) {
+            playStatic(); // <--- ¡ZAS! Sonido de estática al cambiar
+            // Reset UI
+            document.querySelectorAll('.tape-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            
+            // Update Status
+            document.getElementById('status-display').innerText = `TUNED: ${name}`;
+            document.getElementById('status-display').style.color = "var(--neon-cyan)";
+            viz.style.opacity = "1";
+            deck.classList.add('playing'); // Activar animación (Reels + Viz)
+
+            // Cargar Video en el Player existente
+            if(player && player.loadVideoById) {
+                player.loadVideoById(videoId);
+                player.setVolume(currentVol);
+            }
+        }
+
+        function stopAudio() {
+            if(player && player.stopVideo) {
+                player.stopVideo();
+            }
+            document.querySelectorAll('.tape-card').forEach(c => c.classList.remove('active'));
+            document.getElementById('status-display').innerText = "SIGNAL LOST...";
+            document.getElementById('status-display').style.color = "var(--neon-cyan)";
+            viz.style.opacity = "0.2";
+            deck.classList.remove('playing'); // Pausar animación
+        }
+
+        // --- SISTEMA DE PERFILES (Adaptado) ---
+        let currentProfileId = 1;
+        const defaultProfile = { platform: '', name: 'LINK ACCOUNT', level: 'OFFLINE', avatar: '', url: '' };
+
+        function loadProfiles() {
+            const p1 = JSON.parse(localStorage.getItem('profile1')) || defaultProfile;
+            const p2 = JSON.parse(localStorage.getItem('profile2')) || defaultProfile;
+            renderProfile(1, p1);
+            renderProfile(2, p2);
+        }
+
+        function renderProfile(id, data) {
+            const nameEl = document.getElementById(`p${id}-name`);
+            if(!nameEl) return;
+            nameEl.innerText = data.name === 'LINK ACCOUNT' ? `LINK ACCOUNT 0${id}` : data.name;
+            document.getElementById(`p${id}-level`).innerText = data.platform ? `${data.platform} // ${data.level}` : 'OFFLINE';
+            const avatarEl = document.getElementById(`p${id}-avatar`);
+            if (data.avatar) avatarEl.style.backgroundImage = `url('${data.avatar}')`;
+            else avatarEl.style.backgroundImage = 'none';
+        }
+
+        function openProfileEditor(id) {
+            currentProfileId = id;
+            const saved = JSON.parse(localStorage.getItem(`profile${id}`)) || defaultProfile;
+            document.getElementById('edit-platform').value = saved.platform || 'SPOTIFY';
+            document.getElementById('edit-name').value = saved.name === 'LINK ACCOUNT' ? '' : saved.name;
+            document.getElementById('edit-level').value = saved.level === 'OFFLINE' ? '' : saved.level;
+            document.getElementById('edit-avatar').value = saved.avatar || '';
+            document.getElementById('edit-url').value = saved.url || '';
+            document.getElementById('profileEditor').style.display = 'block';
+        }
+
+        function closeProfileEditor() {
+            document.getElementById('profileEditor').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const data = {
+                platform: document.getElementById('edit-platform').value.toUpperCase(),
+                name: document.getElementById('edit-name').value,
+                level: document.getElementById('edit-level').value,
+                avatar: document.getElementById('edit-avatar').value,
+                url: document.getElementById('edit-url').value
+            };
+            if(!data.name) data.name = 'LINK ACCOUNT';
+            localStorage.setItem(`profile${currentProfileId}`, JSON.stringify(data));
+            renderProfile(currentProfileId, data);
+            closeProfileEditor();
+        }
+
+        function visitProfile(id) {
+            const saved = JSON.parse(localStorage.getItem(`profile${id}`));
+            if (saved && saved.url) window.open(saved.url, '_blank');
+            else openProfileEditor(id);
+        }
+
+        setupVisualizer();
+        loadProfiles();
+    </script>
+</body>
+</html>

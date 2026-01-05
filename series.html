@@ -243,6 +243,97 @@
             cursor: pointer; z-index: 20;
         }
         .close-cinema-btn:hover { color: var(--cinema-red); }
+
+        /* NUEVOS ESTILOS PARA EL BUSCADOR Y GRID */
+        .input-group {
+            display: flex; gap: 10px; justify-content: center; margin-bottom: 40px;
+        }
+        .cinema-input {
+            background: #1a1a1a; border: 2px solid #333; color: white;
+            padding: 12px 20px; font-family: 'Montserrat'; width: 100%; max-width: 400px;
+            border-radius: 50px; font-size: 1rem; transition: 0.3s;
+        }
+        .cinema-input:focus { border-color: var(--cinema-red); outline: none; box-shadow: 0 0 15px rgba(229, 9, 20, 0.3); }
+        
+        .series-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px; margin-top: 20px;
+        }
+        .series-card {
+            background: #1a1a1a; border-radius: 10px; overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s; position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #333;
+        }
+        .series-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.8); border-color: var(--cinema-red); z-index: 5; }
+        .series-poster { width: 100%; height: auto; display: block; }
+        .series-card.favorite {
+            border: 2px solid #ffd700; /* Borde Dorado */
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+        }
+        .series-card.finished .series-poster {
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+        .series-info { padding: 15px; }
+        .series-title { font-family: 'Bebas Neue'; font-size: 1.4rem; margin-bottom: 5px; line-height: 1; color: #fff; }
+        .series-meta { font-size: 0.8rem; color: #888; display: flex; justify-content: space-between; text-transform: uppercase; font-weight: bold; }
+        .series-type { color: var(--cinema-red); }
+        
+        .delete-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.8); color: white; border: none;
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s;
+        }
+        .series-card:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { background: var(--cinema-red); }
+
+        .fav-btn {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(0,0,0,0.8); color: #555; border: none;
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s; font-size: 1.2rem; padding: 0;
+        }
+        .series-card:hover .fav-btn { opacity: 1; }
+        .fav-btn:hover { color: #ffd700; transform: scale(1.1); }
+        .fav-btn.active { color: #ffd700; opacity: 1; }
+        
+        .finish-btn {
+            position: absolute; top: 10px; left: 50px;
+            background: rgba(0,0,0,0.8); color: #555; border: none;
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s; font-size: 1.2rem; padding: 0;
+        }
+        .series-card:hover .finish-btn { opacity: 1; }
+        .finish-btn:hover { color: #4ade80; transform: scale(1.1); }
+        .finish-btn.active { color: #4ade80; opacity: 1; }
+
+        .config-btn {
+            position: fixed; top: 30px; left: 30px; z-index: 200;
+            background: rgba(0,0,0,0.8); border: 1px solid #555; color: #aaa;
+            padding: 8px 15px; cursor: pointer; font-family: 'Montserrat'; font-size: 0.8rem;
+        }
+        .config-btn:hover { color: white; border-color: white; }
+
+        /* PROGRESS BAR STYLES */
+        .progress-container { margin-top: 10px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 4px; }
+        .progress-text { font-size: 0.7rem; color: #aaa; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .progress-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
+        .progress-bar-fill { height: 100%; background: var(--cinema-red); transition: width 0.3s; }
+        .progress-controls { display: flex; gap: 5px; }
+        .progress-controls button { flex: 1; padding: 2px 0; font-size: 0.8rem; background: #222; border: 1px solid #444; border-radius: 2px; }
+        .progress-controls button:hover { background: var(--cinema-red); color: white; border-color: var(--cinema-red); }
+
+        .filter-btn {
+            background: transparent; border: 1px solid #555; color: #aaa;
+            padding: 8px 20px; font-size: 0.8rem; margin-bottom: 20px;
+            cursor: pointer; transition: 0.3s; border-radius: 20px;
+        }
+        .filter-btn:hover { border-color: white; color: white; }
+        .filter-btn.active { border-color: #4ade80; color: #4ade80; background: rgba(74, 222, 128, 0.1); }
     </style>
 </head>
 <body>
@@ -281,9 +372,21 @@
         <header>
             <h1>Cinema Database</h1>
             <p style="color: #999; letter-spacing: 1px;">COLECCIÓN DE SERIES Y PELÍCULAS</p>
+            <p id="finished-counter" style="color: #4ade80; font-weight: bold; margin-top: 10px; font-size: 1.1rem; text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);">COMPLETADAS: 0</p>
         </header>
 
-        <div class="empty-state">
+        <div class="input-group">
+            <input type="text" id="seriesInput" class="cinema-input" placeholder="Escribe el nombre (Ej: Breaking Bad)..." onkeypress="handleEnter(event)">
+            <button onclick="addSeries()">AÑADIR</button>
+        </div>
+
+        <div style="text-align: center;">
+            <button id="filterBtn" class="filter-btn" onclick="toggleHideFinished()">👁️ MOSTRAR TODO</button>
+        </div>
+
+        <div id="seriesList" class="series-grid"></div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
             <h2>LA SALA ESTÁ VACÍA</h2>
             <p style="color: #aaa;">No hay proyecciones programadas por el momento.</p>
         </div>
@@ -402,6 +505,230 @@
             overlay.style.background = "#050505";
             document.querySelector('.film-grain').style.display = "block";
         }
+
+        // --- LÓGICA DE BASE DE DATOS DE SERIES ---
+        let seriesDB = JSON.parse(localStorage.getItem('platinumSeries')) || [];
+        let hideFinished = false;
+
+        function toggleHideFinished() {
+            hideFinished = !hideFinished;
+            const btn = document.getElementById('filterBtn');
+            if (hideFinished) {
+                btn.innerText = "🙈 OCULTANDO TERMINADAS";
+                btn.classList.add('active');
+            } else {
+                btn.innerText = "👁️ MOSTRAR TODO";
+                btn.classList.remove('active');
+            }
+            renderSeries();
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') addSeries();
+        }
+
+        function addSeries() {
+            const input = document.getElementById('seriesInput');
+            const name = input.value.trim();
+
+            if (!name) return;
+
+            // 1. Pedir Tipo
+            let typeInput = prompt(`¿QUÉ ES "${name}"?\n\nEscribe "S" para SERIE o "P" para PELÍCULA:`, "S");
+            if (typeInput === null) return;
+            let type = (typeInput.toUpperCase().includes("S") || typeInput.toUpperCase().includes("SERIE")) ? "SERIES" : "MOVIE";
+
+            // 2. Pedir Poster
+            let posterUrl = prompt(`🎬 PÓSTER PARA "${name}"\n\nPega el enlace de la imagen:`, "");
+            if (!posterUrl) posterUrl = "https://via.placeholder.com/300x450?text=NO+IMAGE";
+
+            // 3. Pedir Duración
+            let runtime = prompt(`⏱️ DURACIÓN (Ej: "24 min" o "2h 30m"):`, "?? min");
+            if (!runtime) runtime = "?? min";
+
+            const newItem = {
+                id: Date.now(),
+                title: name,
+                poster: posterUrl,
+                runtime: runtime,
+                type: type,
+                year: new Date().getFullYear().toString(),
+                totalSeasons: "1",
+                customDuration: null,
+                totalEpisodes: 0,
+                currentEpisode: 0,
+                isFavorite: false, // Nuevo campo
+                isFinished: false
+            };
+
+            // Lógica extra para Series
+            if (type === "SERIES") {
+                let seasons = prompt("¿CUÁNTAS TEMPORADAS TIENE?", "1");
+                newItem.totalSeasons = seasons || "1";
+
+                let episodes = prompt(`🔢 ¿CUÁNTOS CAPÍTULOS TIENE EN TOTAL?\n(Necesario para la barra de progreso):`, "12");
+                if (episodes && !isNaN(episodes)) {
+                    newItem.totalEpisodes = parseInt(episodes);
+                    
+                    // Intentar calcular tiempo total si el runtime empieza por número
+                    let minutes = parseInt(runtime);
+                    if (!isNaN(minutes)) {
+                        const totalMins = minutes * parseInt(episodes);
+                        const hours = Math.floor(totalMins / 60);
+                        const mins = totalMins % 60;
+                        newItem.customDuration = `${hours}h ${mins}m`;
+                    }
+                }
+            }
+
+            seriesDB.unshift(newItem);
+            localStorage.setItem('platinumSeries', JSON.stringify(seriesDB));
+            renderSeries();
+            input.value = '';
+        }
+
+        function deleteSeries(id) {
+            if(confirm('¿Eliminar de la colección?')) {
+                seriesDB = seriesDB.filter(item => item.id !== id);
+                localStorage.setItem('platinumSeries', JSON.stringify(seriesDB));
+                renderSeries();
+            }
+        }
+
+        function renderSeries() {
+            const list = document.getElementById('seriesList');
+            const empty = document.getElementById('emptyState');
+            list.innerHTML = '';
+
+            // Actualizar contador de completadas
+            const finishedCount = seriesDB.filter(i => i.isFinished).length;
+            const counterEl = document.getElementById('finished-counter');
+            if(counterEl) counterEl.innerText = `COMPLETADAS: ${finishedCount}`;
+
+            // Filtrar lista si está activo el modo ocultar
+            let displayList = seriesDB;
+            if (hideFinished) {
+                displayList = seriesDB.filter(item => !item.isFinished);
+            }
+
+            if (displayList.length === 0) {
+                empty.style.display = 'block';
+                const p = empty.querySelector('p');
+                if (seriesDB.length > 0 && hideFinished) {
+                    p.innerText = "No hay series pendientes. ¡Todo visto!";
+                } else {
+                    p.innerText = "No hay proyecciones programadas por el momento.";
+                }
+            } else {
+                empty.style.display = 'none';
+                displayList.forEach(item => {
+                    // Lógica para mostrar duración total estimada o temporadas
+                    let durationDisplay = item.runtime;
+                    
+                    // Si hemos calculado el tiempo total, mostramos eso (PRIORIDAD)
+                    if (item.customDuration) {
+                        durationDisplay = item.customDuration + " (TOTAL)";
+                    } else if (item.type === 'SERIES' && item.totalSeasons && item.totalSeasons !== "N/A") {
+                        // Si no, mostramos las temporadas como antes
+                        durationDisplay = `${item.totalSeasons} TEMPS`;
+                        if (item.runtime && item.runtime !== "N/A") durationDisplay += ` (${item.runtime})`;
+                    }
+
+                    // HTML de la barra de progreso (Solo si tiene episodios definidos)
+                    let progressHtml = '';
+                    if (item.totalEpisodes > 0) {
+                        const currentEp = item.currentEpisode || 0;
+                        const pct = (currentEp / item.totalEpisodes) * 100;
+                        progressHtml = `
+                            <div class="progress-container">
+                                <div class="progress-text"><span>CAPÍTULO</span> <span>${currentEp} / ${item.totalEpisodes}</span></div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct}%"></div></div>
+                                <div class="progress-controls">
+                                    <button onclick="updateProgress(${item.id}, -1)">-</button>
+                                    <button onclick="updateProgress(${item.id}, 1)">+</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = `series-card ${item.isFavorite ? 'favorite' : ''} ${item.isFinished ? 'finished' : ''}`;
+                    card.innerHTML = `
+                        <img src="${item.poster}" class="series-poster" alt="${item.title}">
+                        <div class="series-info">
+                            <div class="series-title">${item.title}</div>
+                            <div class="series-meta">
+                                <span>⏱️ ${durationDisplay}</span>
+                                <span class="series-type">${item.type}</span>
+                            </div>
+                            ${progressHtml}
+                        </div>
+                        <button class="fav-btn ${item.isFavorite ? 'active' : ''}" onclick="toggleFavorite(${item.id})">★</button>
+                        <button class="finish-btn ${item.isFinished ? 'active' : ''}" onclick="toggleFinished(${item.id})" title="Marcar como terminada">✓</button>
+                        <button class="delete-btn" onclick="deleteSeries(${item.id})">×</button>
+                    `;
+                    list.appendChild(card);
+                });
+            }
+        }
+
+        // --- SONIDO DE FAVORITO (Web Audio API) ---
+        function playFavoriteSound() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            // Sonido tipo "campana" o "moneda" agudo
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, ctx.currentTime); // Empieza agudo
+            osc.frequency.exponentialRampToValueAtTime(1800, ctx.currentTime + 0.1); // Sube rápido
+
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5); // Se apaga suave
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        }
+
+        function toggleFavorite(id) {
+            const item = seriesDB.find(i => i.id === id);
+            if (item) {
+                item.isFavorite = !item.isFavorite;
+                if (item.isFavorite) playFavoriteSound(); // ¡DING!
+                localStorage.setItem('platinumSeries', JSON.stringify(seriesDB));
+                renderSeries();
+            }
+        }
+
+        function toggleFinished(id) {
+            const item = seriesDB.find(i => i.id === id);
+            if (item) {
+                item.isFinished = !item.isFinished;
+                localStorage.setItem('platinumSeries', JSON.stringify(seriesDB));
+                renderSeries();
+            }
+        }
+
+        function updateProgress(id, change) {
+            const item = seriesDB.find(i => i.id === id);
+            if (item && item.totalEpisodes > 0) {
+                let newEp = (item.currentEpisode || 0) + change;
+                if (newEp < 0) newEp = 0;
+                if (newEp > item.totalEpisodes) newEp = item.totalEpisodes;
+                item.currentEpisode = newEp;
+                localStorage.setItem('platinumSeries', JSON.stringify(seriesDB));
+                renderSeries();
+            }
+        }
+
+        // Cargar al inicio
+        document.addEventListener('DOMContentLoaded', renderSeries);
     </script>
 
     <script src="script.js"></script>

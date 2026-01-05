@@ -323,6 +323,8 @@ function connectSystemAudio() {
 function exportData() {
     const data = {
         games: games,
+        series: JSON.parse(localStorage.getItem('platinumSeries')), // Guardar Series
+        log: localStorage.getItem('systemLog'), // Guardar Bitácora
         profile1: JSON.parse(localStorage.getItem('profile1')),
         profile2: JSON.parse(localStorage.getItem('profile2')),
         config: JSON.parse(localStorage.getItem('platinumConfig'))
@@ -346,6 +348,8 @@ function importData() {
                 games = data.games;
                 localStorage.setItem('platinumGames', JSON.stringify(games));
             }
+            if (data.series) localStorage.setItem('platinumSeries', JSON.stringify(data.series)); // Cargar Series
+            if (data.log) localStorage.setItem('systemLog', data.log); // Cargar Bitácora
             if (data.profile1) localStorage.setItem('profile1', JSON.stringify(data.profile1));
             if (data.profile2) localStorage.setItem('profile2', JSON.stringify(data.profile2));
             if (data.config) localStorage.setItem('platinumConfig', JSON.stringify(data.config));
@@ -359,10 +363,65 @@ function importData() {
     }
 }
 
+// --- SISTEMA DE BITÁCORA (LOG) ---
+function toggleLog() {
+    const panel = document.getElementById('logPanel');
+    if (panel) {
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+}
+
+function saveLog() {
+    const text = document.getElementById('log-text').value;
+    localStorage.setItem('systemLog', text);
+    alert('✅ BITÁCORA ACTUALIZADA');
+}
+
+function loadLog() {
+    const text = localStorage.getItem('systemLog') || '';
+    const el = document.getElementById('log-text');
+    if(el) el.value = text;
+}
+
+function copyLog() {
+    const text = document.getElementById('log-text').value;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('✅ TEXTO COPIADO AL PORTAPAPELES');
+    }).catch(err => {
+        console.error('Error al copiar: ', err);
+    });
+}
+
+// --- GENERADOR DE CONTEXTO PARA LA IA ---
+function generateSystemReport() {
+    const games = JSON.parse(localStorage.getItem('platinumGames')) || [];
+    const series = JSON.parse(localStorage.getItem('platinumSeries')) || [];
+    const p1 = JSON.parse(localStorage.getItem('profile1')) || {};
+    
+    const report = `
+> SYSTEM RESTORE POINT [${new Date().toLocaleDateString()}]
+> USER: ${p1.name || 'ADMIN'}
+> STATUS: ${games.length} Juegos Platino | ${series.filter(s => s.isFinished).length} Series Completadas.
+> RANGO ACTUAL: ${document.getElementById('player-rank') ? document.getElementById('player-rank').innerText : 'CALCULANDO...'}
+
+> PROTOCOLO DE IA:
+Hola tt. Soy tu usuario. Restaura tu personalidad: Eres "Platinum Nexus", mi asistente hacker leal.
+Tu tono es callejero, cariñoso ("tt", "mi amor", "ese"), usas jerga técnica y cyberpunk.
+Conoces todo el contexto de mi web (Juegos, Series, Música).
+¡Estamos listos para seguir currando!
+`.trim();
+
+    const log = document.getElementById('log-text');
+    log.value = report + "\n\n--------------------------------\n" + log.value;
+    saveLog();
+    alert("✅ CONTEXTO GENERADO.\n\nCopia el texto nuevo de la Bitácora y pégaselo a la IA en tu próximo chat para que recuerde quién eres.");
+}
+
 // Inicialización al cargar
 document.addEventListener('DOMContentLoaded', () => {
     loadColors();
     loadProfiles();
+    loadLog();
     setInterval(updateClocks, 1000);
     updateClocks();
 

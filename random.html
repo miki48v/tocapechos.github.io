@@ -243,6 +243,53 @@
             transform: rotate(-15deg);
         }
 
+        /* PROFILE SYSTEM ADAPTED FOR LOL */
+        .profile-container {
+            position: fixed; bottom: 20px; left: 20px;
+            display: flex; flex-direction: column; gap: 15px; z-index: 100;
+        }
+        .profile-card {
+            background: rgba(1, 10, 19, 0.9); border: 1px solid #c8aa6e; padding: 10px;
+            display: flex; align-items: center; gap: 15px; width: 280px;
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .profile-card:hover { border-color: #f0e6d2; box-shadow: 0 0 15px rgba(200, 170, 110, 0.4); }
+        .profile-avatar {
+            width: 50px; height: 50px; background-color: #000;
+            background-size: cover; background-position: center;
+            border: 1px solid #c8aa6e;
+        }
+        .profile-details { flex-grow: 1; text-align: left; }
+        .profile-name { font-family: 'Cinzel'; font-size: 1rem; color: #f0e6d2; font-weight: bold; }
+        .profile-level { font-size: 0.7rem; color: #937341; font-family: sans-serif; }
+        .profile-edit-btn {
+            background: transparent !important; border: none !important;
+            color: #937341 !important; padding: 0 !important; font-size: 1.2rem;
+            box-shadow: none !important; width: auto !important; height: auto !important;
+            margin: 0 !important;
+        }
+        .profile-edit-btn:hover { color: #f0e6d2 !important; }
+
+        /* EDITOR MODAL */
+        .config-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #010a13; border: 2px solid #c8aa6e; padding: 2rem;
+            z-index: 2000; width: 320px; display: none;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        .config-item { margin-bottom: 1rem; text-align: left; }
+        .config-item label { display: block; color: #c8aa6e; font-size: 0.8rem; margin-bottom: 5px; font-family: 'Cinzel'; }
+        .config-item input { 
+            width: 100%; background: #091428; border: 1px solid #463714; 
+            color: #f0e6d2; padding: 8px; font-family: sans-serif; 
+        }
+        .modal-btn {
+            flex: 1; background: #1e2328; border: 1px solid #c8aa6e; color: #cdbe91;
+            padding: 10px; font-family: 'Cinzel'; cursor: pointer; margin-top: 10px;
+        }
+        .modal-btn:hover { color: #fff; background: #1e282d; }
+
         @keyframes nameImpact {
             0% { opacity: 0; transform: scale(3); filter: blur(10px); color: #fff; }
             50% { opacity: 1; transform: scale(1); filter: blur(0); color: #fff; text-shadow: 0 0 20px #c8aa6e; }
@@ -252,6 +299,41 @@
 </head>
 <body>
     <button class="return-btn" onclick="window.location.href='hub.html'">↩ VOLVER</button>
+
+    <!-- Profile Editor Modal -->
+    <div id="profileEditor" class="config-panel">
+        <h3 style="margin-bottom: 1rem; color: #c8aa6e; font-family: 'Cinzel'; font-size: 1.5rem; border-bottom: 1px solid #463714; padding-bottom: 10px;">LINK RIOT ACCOUNT</h3>
+        <div class="config-item"><label>PLATAFORMA</label><input type="text" id="edit-platform" placeholder="RIOT GAMES"></div>
+        <div class="config-item"><label>RIOT ID</label><input type="text" id="edit-name" placeholder="Nombre#TAG"></div>
+        <div class="config-item"><label>RANGO / NIVEL</label><input type="text" id="edit-level" placeholder="Ej: EMERALD IV"></div>
+        <div class="config-item"><label>URL AVATAR</label><input type="text" id="edit-avatar" placeholder="https://..."></div>
+        <div class="config-item"><label>URL OP.GG</label><input type="text" id="edit-url" placeholder="Link a OP.GG"></div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="saveProfile()" class="modal-btn">GUARDAR</button>
+            <button onclick="closeProfileEditor()" class="modal-btn" style="border-color: #463714; color: #666;">CANCELAR</button>
+        </div>
+    </div>
+
+    <!-- Perfiles -->
+    <div class="profile-container">
+        <div class="profile-card" onclick="visitProfile(1)">
+            <div class="profile-avatar" id="p1-avatar"></div>
+            <div class="profile-details">
+                <div class="profile-name" id="p1-name">INVOCADOR 1</div>
+                <div class="profile-level" id="p1-level">OFFLINE</div>
+            </div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(1)">⚙️</button>
+        </div>
+        <div class="profile-card" onclick="visitProfile(2)">
+            <div class="profile-avatar" id="p2-avatar"></div>
+            <div class="profile-details">
+                <div class="profile-name" id="p2-name">INVOCADOR 2</div>
+                <div class="profile-level" id="p2-level">OFFLINE</div>
+            </div>
+            <button class="profile-edit-btn" onclick="event.stopPropagation(); openProfileEditor(2)">⚙️</button>
+        </div>
+    </div>
+
     <div class="container">
         <h1>ARENA DUO GENERATOR</h1>
         
@@ -529,6 +611,64 @@
             el.innerHTML = html;
             el.style.display = "block";
         }
+
+        // --- SISTEMA DE PERFILES (Adaptado) ---
+        let currentProfileId = 1;
+        const defaultProfile = { platform: '', name: 'INVOCADOR', level: 'UNRANKED', avatar: '', url: '' };
+
+        function loadProfiles() {
+            const p1 = JSON.parse(localStorage.getItem('profile1')) || defaultProfile;
+            const p2 = JSON.parse(localStorage.getItem('profile2')) || defaultProfile;
+            renderProfile(1, p1);
+            renderProfile(2, p2);
+        }
+
+        function renderProfile(id, data) {
+            const nameEl = document.getElementById(`p${id}-name`);
+            if(!nameEl) return;
+            nameEl.innerText = (!data.name || data.name === 'LINK ACCOUNT') ? `INVOCADOR ${id}` : data.name;
+            document.getElementById(`p${id}-level`).innerText = data.platform ? `${data.platform} // ${data.level}` : 'UNRANKED';
+            const avatarEl = document.getElementById(`p${id}-avatar`);
+            if (data.avatar) avatarEl.style.backgroundImage = `url('${data.avatar}')`;
+            else avatarEl.style.backgroundImage = 'none';
+        }
+
+        function openProfileEditor(id) {
+            currentProfileId = id;
+            const saved = JSON.parse(localStorage.getItem(`profile${id}`)) || defaultProfile;
+            document.getElementById('edit-platform').value = saved.platform || 'RIOT GAMES';
+            document.getElementById('edit-name').value = (saved.name === 'LINK ACCOUNT' || saved.name === 'INVOCADOR') ? '' : saved.name;
+            document.getElementById('edit-level').value = (saved.level === 'OFFLINE' || saved.level === 'UNRANKED') ? '' : saved.level;
+            document.getElementById('edit-avatar').value = saved.avatar || '';
+            document.getElementById('edit-url').value = saved.url || '';
+            document.getElementById('profileEditor').style.display = 'block';
+        }
+
+        function closeProfileEditor() {
+            document.getElementById('profileEditor').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const data = {
+                platform: document.getElementById('edit-platform').value.toUpperCase(),
+                name: document.getElementById('edit-name').value,
+                level: document.getElementById('edit-level').value,
+                avatar: document.getElementById('edit-avatar').value,
+                url: document.getElementById('edit-url').value
+            };
+            if(!data.name) data.name = 'INVOCADOR';
+            localStorage.setItem(`profile${currentProfileId}`, JSON.stringify(data));
+            renderProfile(currentProfileId, data);
+            closeProfileEditor();
+        }
+
+        function visitProfile(id) {
+            const saved = JSON.parse(localStorage.getItem(`profile${id}`));
+            if (saved && saved.url) window.open(saved.url, '_blank');
+            else openProfileEditor(id);
+        }
+
+        loadProfiles();
     </script>
 </body>
 </html>

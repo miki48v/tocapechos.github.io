@@ -5,8 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLATINUM NEXUS // SYSTEM</title>
     <link rel="stylesheet" href="standard.css">
+    <style>
+        /* LOADING SCREEN STYLES */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-family: 'Courier New', monospace;
+        }
+        .loader-container {
+            width: 300px;
+            text-align: center;
+        }
+        .progress-bar-bg {
+            width: 100%; height: 4px; background: #1a1a1a;
+            margin: 15px 0; position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%; background: #00f3ff; width: 0%;
+            box-shadow: 0 0 15px #00f3ff;
+            transition: width 0.2s ease-out;
+        }
+        .loading-text {
+            color: #00f3ff; font-size: 0.8rem; letter-spacing: 2px;
+            text-shadow: 0 0 5px #00f3ff;
+        }
+        .asset-text {
+            color: #555; font-size: 0.6rem; margin-top: 5px; height: 1rem;
+        }
+        
+        /* Ocultar menú principal al inicio */
+        #mainMenu { opacity: 0; transition: opacity 1s; }
+    </style>
 </head>
 <body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loading-text">SYSTEM BOOT SEQUENCE</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress"></div>
+            </div>
+            <div class="asset-text" id="asset-log">INITIALIZING...</div>
+        </div>
+    </div>
 
     <div id="mainMenu">
         <h1>SYSTEM OS</h1>
@@ -15,5 +58,64 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Script de Carga de Assets
+        const assets = [
+            "LOADING KERNEL...", "MOUNTING FILE SYSTEM...", "LOADING ASSETS...", 
+            "CONNECTING TO NEURAL NET...", "DECRYPTING USER DATA...", "OPTIMIZING CACHE...",
+            "ESTABLISHING SECURE LINK...", "SYSTEM READY"
+        ];
+        
+        let progress = 0;
+        const bar = document.getElementById('progress');
+        const log = document.getElementById('asset-log');
+        const screen = document.getElementById('loading-screen');
+        const menu = document.getElementById('mainMenu');
+
+        // Simulación de carga visual (para que no se quede quieto si carga rápido)
+        function updateLoader() {
+            if (progress < 90) {
+                // Incrementos aleatorios para parecer "computación real"
+                progress += Math.random() * 15;
+                if(progress > 90) progress = 90;
+                
+                bar.style.width = progress + "%";
+                
+                // Cambiar texto aleatoriamente
+                if(Math.random() > 0.5) {
+                    log.innerText = assets[Math.floor(Math.random() * assets.length)];
+                }
+                
+                // Velocidad variable
+                setTimeout(updateLoader, 100 + Math.random() * 300);
+            }
+        }
+
+        // Iniciar animación falsa
+        updateLoader();
+
+        // EVENTO CLAVE: window.load espera a que TODO (imágenes, css, scripts) esté bajado
+        window.addEventListener('load', () => {
+            // Forzar el 100% visualmente
+            progress = 100;
+            bar.style.width = "100%";
+            log.innerText = "ACCESS GRANTED";
+            log.style.color = "#00f3ff";
+            
+            // Pequeña pausa para que veas el 100% y transición suave
+            setTimeout(() => {
+                screen.style.transition = "opacity 0.8s ease-out";
+                screen.style.opacity = "0";
+                
+                // Mostrar el menú real
+                menu.style.opacity = "1";
+                
+                // Eliminar el loader del DOM para que no moleste
+                setTimeout(() => {
+                    screen.style.display = "none";
+                }, 800);
+            }, 800);
+        });
+    </script>
 </body>
 </html>

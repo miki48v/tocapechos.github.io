@@ -9,6 +9,7 @@
 <body>
 
     <button class="config-btn" onclick="toggleConfig()">⚙️ SYSTEM CONFIG</button>
+    <button class="config-btn" style="left: auto; right: 20px;" onclick="toggleLog()">📝 BITÁCORA</button>
     
     <div id="configPanel" class="config-panel">
         <div class="config-item">
@@ -33,6 +34,17 @@
             <button onclick="importData()" style="width: 100%; font-size: 0.8rem; background: #333; border-color: #555;">CARGAR DATOS DE OTRO</button>
         </div>
         <button onclick="resetColors()" style="width: 100%; margin-top: 10px;">RESET DEFAULT</button>
+    </div>
+
+    <!-- LOG PANEL (BITÁCORA) -->
+    <div id="logPanel" class="config-panel" style="display: none; z-index: 3000;">
+        <h3 style="color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; margin-bottom: 10px;">SYSTEM LOG // NOTES</h3>
+        <button onclick="generateSystemReport()" style="width: 100%; margin-bottom: 10px; background: #111; border: 1px dashed var(--neon-cyan); color: var(--neon-cyan); font-size: 0.8rem; cursor: pointer; padding: 8px;">🤖 GENERAR CONTEXTO PARA IA</button>
+        <textarea id="log-text" style="width: 100%; height: 250px; background: rgba(0,0,0,0.8); color: var(--neon-cyan); border: 1px solid #333; padding: 10px; font-family: 'Courier New', monospace; resize: none;" placeholder="> Escribe aquí tus notas..."></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button onclick="saveLog()" style="flex: 1;">GUARDAR DATOS</button>
+            <button onclick="copyLog()" style="flex: 1; background: #222; border: 1px solid var(--neon-cyan); color: var(--neon-cyan);">COPIAR</button>
+        </div>
     </div>
 
     <!-- Profile Editor Modal -->
@@ -170,10 +182,10 @@
                 <div class="hub-title">RANDOM LOL</div>
                 <p>Generador de Duos para Arena.</p>
             </div>
-            <div class="hub-card" style="opacity: 0.6;">
-                <span class="hub-icon">⚙️</span>
-                <div class="hub-title">Configuración</div>
-                <p>Ajustes del sistema.</p>
+            <div class="hub-card" onclick="window.location.href='music.html'">
+                <span class="hub-icon">🎧</span>
+                <div class="hub-title">Music Station</div>
+                <p>Frecuencias Lo-Fi & Synth.</p>
             </div>
         </div>
     </div>
